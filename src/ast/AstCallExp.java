@@ -1,5 +1,9 @@
 package ast;
 
+import ast.Exp.AstExp;
+import ast.Exp.AstExpList;
+import ast.Var.AstVar;
+
 public class AstCallExp extends AstExp {
 
     public AstVar receiver;       // null if calling f()

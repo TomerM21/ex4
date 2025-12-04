@@ -1,4 +1,8 @@
-package ast;
+package ast.Exp;
+
+import ast.AstGraphviz;
+import ast.AstNodeSerialNumber;
+import ast.Var.AstVar;
 
 public class AstExpVar extends AstExp
 {

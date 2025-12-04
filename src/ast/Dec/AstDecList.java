@@ -1,4 +1,8 @@
-package ast;
+package ast.Dec;
+
+import ast.AstGraphviz;
+import ast.AstNode;
+import ast.AstNodeSerialNumber;
 
 public class AstDecList extends AstNode extends AstList
 {
@@ -31,7 +35,7 @@ public class AstDecList extends AstNode extends AstList
         this.tail = tail;
 
         left = head;
-        right = tai;
+        right = tail;
     }
 
     /******************************************************/

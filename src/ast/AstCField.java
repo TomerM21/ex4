@@ -1,5 +1,7 @@
 package ast;
 
+import ast.Dec.AstDec;
+
 public class AstCField extends AstNode {
 
     public AstDec dec;  

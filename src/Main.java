@@ -3,6 +3,7 @@ import java.io.*;
 import java.io.PrintWriter;
 import java_cup.runtime.Symbol;
 import ast.*;
+import ast.Dec.AstDecList;
 
 public class Main
 {
@@ -52,7 +53,7 @@ public class Main
 			/**************************/
 			/* [7] Semant the AST ... */
 			/**************************/
-			ast.semantMe();
+			ast.SemantMe();
 			
 			/*************************/
 			/* [8] Close output file */

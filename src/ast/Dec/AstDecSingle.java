@@ -1,4 +1,7 @@
-package ast;
+package ast.Dec;
+
+import ast.AstGraphviz;
+import ast.AstNodeSerialNumber;
 
 public class AstDecSingle extends AstDec {
     AstDec dec;

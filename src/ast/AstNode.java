@@ -1,5 +1,7 @@
 package ast;
 
+import types.Type;
+
 public abstract class AstNode
 {
 	/*******************************************/

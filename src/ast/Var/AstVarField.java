@@ -1,4 +1,7 @@
-package ast;
+package ast.Var;
+
+import ast.AstGraphviz;
+import ast.AstNodeSerialNumber;
 
 public class AstVarField extends AstVar
 {

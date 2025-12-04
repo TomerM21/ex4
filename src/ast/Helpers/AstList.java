@@ -1,7 +1,8 @@
-package ast.helpers; // ?????????
+package ast.Helpers;
 
 import types.Type;
 import types.TypeList;
+import ast.AstNode;
 
 import java.util.Iterator;
 
@@ -26,8 +27,8 @@ public abstract class AstList extends AstNode implements Iterable<AstNode>{
     }
 
     @Override
-    public Iterator<AST_Node> iterator() {
-        return new ASTListIterator(this);
+    public Iterator<AstNode> iterator() {
+        return new AstListIterator(this);
     }
 
 }

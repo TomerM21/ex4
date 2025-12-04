@@ -1,4 +1,10 @@
-package ast;
+package ast.Dec;
+
+import ast.AstGraphviz;
+import ast.AstNodeSerialNumber;
+import ast.AstType;
+import ast.AstTypeList;
+import ast.Stmt.AstStmtList;
 
 public class AstFuncDec extends AstDec {
     private AstType returnType;

@@ -1,14 +1,17 @@
-package ast;
+package ast.Stmt;
 
-public class AstNewExp extends AstExp {
+import ast.AstGraphviz;
+import ast.AstNodeSerialNumber;
+import ast.Exp.AstExp;
 
-    public AstType type;
-    public AstExp sizeExp;   // null if not array allocation
+public class AstStmtReturn extends AstStmt
+{
+    public AstExp exp; // may be null
 
     /******************/
     /* CONSTRUCTOR(S) */
     /******************/
-    public AstNewExp(AstType type, AstExp sizeExp)
+    public AstStmtReturn(AstExp exp)
     {
         /******************************/
         /* SET A UNIQUE SERIAL NUMBER */
@@ -18,47 +21,43 @@ public class AstNewExp extends AstExp {
         /***************************************/
         /* PRINT CORRESPONDING DERIVATION RULE */
         /***************************************/
-        if (sizeExp == null)
-            System.out.print("====================== newExp -> NEW type\n");
+        if (exp == null)
+            System.out.print("====================== stmt -> RETURN ;\n");
         else
-            System.out.print("====================== newExp -> NEW type [exp]\n");
+            System.out.print("====================== stmt -> RETURN exp ;\n");
 
         /*******************************/
         /* COPY INPUT DATA MEMBERS ... */
         /*******************************/
-        this.type = type;
-        this.sizeExp = sizeExp;
+        this.exp = exp;
     }
 
-    /**********************************************/
-    /* The printing message for a new exp AST node */
-    /**********************************************/
+    /*************************************************/
+    /* The printing message for a RETURN stmt AST    */
+    /*************************************************/
     public void printMe()
     {
         /*************************************/
-        /* AST NODE TYPE = AST NEW EXP       */
+        /* AST NODE TYPE = AST STMT RETURN   */
         /*************************************/
-        System.out.print("AST NODE NEW EXP\n");
+        System.out.print("AST NODE RETURN STMT\n");
 
         /*****************************/
-        /* RECURSIVELY PRINT KIDS   */
+        /* RECURSIVELY PRINT CHILD  */
         /*****************************/
-        if (type != null) type.printMe();
-        if (sizeExp != null) sizeExp.printMe();
+        if (exp != null) exp.printMe();
 
         /*********************************/
         /* Print to AST GRAPHVIZ DOT file */
         /*********************************/
         AstGraphviz.getInstance().logNode(
                 serialNumber,
-                "NEW\nEXP");
+                "RETURN\nSTMT");
 
         /****************************************/
         /* PRINT Edges to AST GRAPHVIZ DOT file */
         /****************************************/
-        if (type != null)
-            AstGraphviz.getInstance().logEdge(serialNumber, type.serialNumber);
-        if (sizeExp != null)
-            AstGraphviz.getInstance().logEdge(serialNumber, sizeExp.serialNumber);
+        if (exp != null)
+            AstGraphviz.getInstance().logEdge(serialNumber, exp.serialNumber);
     }
 }

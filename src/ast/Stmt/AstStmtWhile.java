@@ -1,15 +1,19 @@
-package ast;
+package ast.Stmt;
 
-public class AstStmtIf extends AstStmt
+import ast.AstGraphviz;
+import ast.AstNodeSerialNumber;
+import ast.Exp.AstExp;
+
+public class AstStmtWhile extends AstStmt
 {
-    public AstExp cond;
-    public AstStmtList body;
+	public AstExp cond;
+	public AstStmtList body;
 
-    /*******************/
-    /*  CONSTRUCTOR(S) */
-    /*******************/
-    public AstStmtIf(AstExp cond, AstStmtList body)
-    {
+	/*******************/
+	/*  CONSTRUCTOR(S) */
+	/*******************/
+	public AstStmtWhile(AstExp cond, AstStmtList body)
+	{
         /******************************/
         /* SET A UNIQUE SERIAL NUMBER */
         /******************************/
@@ -18,24 +22,21 @@ public class AstStmtIf extends AstStmt
         /***************************************/
         /* PRINT CORRESPONDING DERIVATION RULE */
         /***************************************/
-        System.out.print("====================== stmt -> IF (exp) { stmtList }\n");
+        System.out.print("====================== stmt -> WHILE (exp) { stmtList }\n");
 
-        /*******************************/
-        /* COPY INPUT DATA MEMBERS ... */
-        /*******************************/
         this.cond = cond;
         this.body = body;
-    }
+	}
 
-    /*************************************************/
-    /* The printing message for an IF stmt AST node  */
-    /*************************************************/
+    /***************************************************/
+    /* The printing message for a WHILE stmt AST node  */
+    /***************************************************/
     public void printMe()
     {
         /*************************************/
-        /* AST NODE TYPE = AST STMT IF       */
+        /* AST NODE TYPE = AST STMT WHILE    */
         /*************************************/
-        System.out.print("AST NODE IF STMT\n");
+        System.out.print("AST NODE WHILE STMT\n");
 
         /*****************************/
         /* RECURSIVELY PRINT KIDS   */
@@ -48,10 +49,10 @@ public class AstStmtIf extends AstStmt
         /*********************************/
         AstGraphviz.getInstance().logNode(
                 serialNumber,
-                "IF\nSTMT");
+                "WHILE\nSTMT");
 
         /****************************************/
-        /* PRINT EDges to AST GRAPHVIZ DOT file */
+        /* PRINT Edges to AST GRAPHVIZ DOT file */
         /****************************************/
         if (cond != null)
             AstGraphviz.getInstance().logEdge(serialNumber, cond.serialNumber);

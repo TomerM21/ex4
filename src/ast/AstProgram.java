@@ -1,5 +1,6 @@
 package ast;
-import types.TYPE;
+import ast.Dec.AstDecList;
+import types.*;
 
 public class AstProgram extends AstNode {
 

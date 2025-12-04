@@ -1,15 +1,15 @@
-package ast;
+package ast.Exp;
 
-public class AstStmtWhile extends AstStmt
-{
-	public AstExp cond;
-	public AstStmtList body;
+import ast.AstGraphviz;
+import ast.AstNodeSerialNumber;
 
-	/*******************/
-	/*  CONSTRUCTOR(S) */
-	/*******************/
-	public AstStmtWhile(AstExp cond, AstStmtList body)
-	{
+public class AstExpNil extends AstExp {
+
+    /******************/
+    /* CONSTRUCTOR(S) */
+    /******************/
+    public AstExpNil()
+    {
         /******************************/
         /* SET A UNIQUE SERIAL NUMBER */
         /******************************/
@@ -18,41 +18,32 @@ public class AstStmtWhile extends AstStmt
         /***************************************/
         /* PRINT CORRESPONDING DERIVATION RULE */
         /***************************************/
-        System.out.print("====================== stmt -> WHILE (exp) { stmtList }\n");
-
-        this.cond = cond;
-        this.body = body;
-	}
+        System.out.print("====================== exp -> NIL\n");
+    }
 
     /***************************************************/
-    /* The printing message for a WHILE stmt AST node  */
+    /* The printing message for a NIL exp AST node     */
     /***************************************************/
     public void printMe()
     {
         /*************************************/
-        /* AST NODE TYPE = AST STMT WHILE    */
+        /* AST NODE TYPE = AST EXP NIL       */
         /*************************************/
-        System.out.print("AST NODE WHILE STMT\n");
+        System.out.print("AST NODE NIL\n");
 
         /*****************************/
-        /* RECURSIVELY PRINT KIDS   */
+        /* NO CHILDREN TO PRINT     */
         /*****************************/
-        if (cond != null) cond.printMe();
-        if (body != null) body.printMe();
 
         /*********************************/
         /* Print to AST GRAPHVIZ DOT file */
         /*********************************/
         AstGraphviz.getInstance().logNode(
                 serialNumber,
-                "WHILE\nSTMT");
+                "NIL");
 
         /****************************************/
-        /* PRINT Edges to AST GRAPHVIZ DOT file */
+        /* NO EDGES — LEAF NODE                 */
         /****************************************/
-        if (cond != null)
-            AstGraphviz.getInstance().logEdge(serialNumber, cond.serialNumber);
-        if (body != null)
-            AstGraphviz.getInstance().logEdge(serialNumber, body.serialNumber);
     }
 }

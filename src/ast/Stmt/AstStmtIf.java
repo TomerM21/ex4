@@ -1,13 +1,18 @@
-package ast;
+package ast.Stmt;
 
-public class AstStmtReturn extends AstStmt
+import ast.AstGraphviz;
+import ast.AstNodeSerialNumber;
+import ast.Exp.AstExp;
+
+public class AstStmtIf extends AstStmt
 {
-    public AstExp exp; // may be null
+    public AstExp cond;
+    public AstStmtList body;
 
-    /******************/
-    /* CONSTRUCTOR(S) */
-    /******************/
-    public AstStmtReturn(AstExp exp)
+    /*******************/
+    /*  CONSTRUCTOR(S) */
+    /*******************/
+    public AstStmtIf(AstExp cond, AstStmtList body)
     {
         /******************************/
         /* SET A UNIQUE SERIAL NUMBER */
@@ -17,43 +22,44 @@ public class AstStmtReturn extends AstStmt
         /***************************************/
         /* PRINT CORRESPONDING DERIVATION RULE */
         /***************************************/
-        if (exp == null)
-            System.out.print("====================== stmt -> RETURN ;\n");
-        else
-            System.out.print("====================== stmt -> RETURN exp ;\n");
+        System.out.print("====================== stmt -> IF (exp) { stmtList }\n");
 
         /*******************************/
         /* COPY INPUT DATA MEMBERS ... */
         /*******************************/
-        this.exp = exp;
+        this.cond = cond;
+        this.body = body;
     }
 
     /*************************************************/
-    /* The printing message for a RETURN stmt AST    */
+    /* The printing message for an IF stmt AST node  */
     /*************************************************/
     public void printMe()
     {
         /*************************************/
-        /* AST NODE TYPE = AST STMT RETURN   */
+        /* AST NODE TYPE = AST STMT IF       */
         /*************************************/
-        System.out.print("AST NODE RETURN STMT\n");
+        System.out.print("AST NODE IF STMT\n");
 
         /*****************************/
-        /* RECURSIVELY PRINT CHILD  */
+        /* RECURSIVELY PRINT KIDS   */
         /*****************************/
-        if (exp != null) exp.printMe();
+        if (cond != null) cond.printMe();
+        if (body != null) body.printMe();
 
         /*********************************/
         /* Print to AST GRAPHVIZ DOT file */
         /*********************************/
         AstGraphviz.getInstance().logNode(
                 serialNumber,
-                "RETURN\nSTMT");
+                "IF\nSTMT");
 
         /****************************************/
-        /* PRINT Edges to AST GRAPHVIZ DOT file */
+        /* PRINT EDges to AST GRAPHVIZ DOT file */
         /****************************************/
-        if (exp != null)
-            AstGraphviz.getInstance().logEdge(serialNumber, exp.serialNumber);
+        if (cond != null)
+            AstGraphviz.getInstance().logEdge(serialNumber, cond.serialNumber);
+        if (body != null)
+            AstGraphviz.getInstance().logEdge(serialNumber, body.serialNumber);
     }
 }

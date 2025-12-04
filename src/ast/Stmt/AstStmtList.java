@@ -1,4 +1,8 @@
-package ast;
+package ast.Stmt;
+
+import ast.AstGraphviz;
+import ast.AstNode;
+import ast.AstNodeSerialNumber;
 
 public class AstStmtList extends AstNode
 {

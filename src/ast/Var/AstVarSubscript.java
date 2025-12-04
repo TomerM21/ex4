@@ -1,4 +1,8 @@
-package ast;
+package ast.Var;
+
+import ast.AstGraphviz;
+import ast.AstNodeSerialNumber;
+import ast.Exp.AstExp;
 
 public class AstVarSubscript extends AstVar
 {

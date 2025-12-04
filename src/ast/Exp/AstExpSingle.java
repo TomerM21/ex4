@@ -1,42 +1,44 @@
-package ast;
+package ast.Exp;
 
-public class AstArrayTypeDef extends AstDec {
-    private String name;
-    private AstType type;
+import ast.AstGraphviz;
+import ast.AstNodeSerialNumber;
 
-    public AstArrayTypeDef(String name, AstType type)
+public class AstExpSingle extends AstExp {
+
+    public AstExp exp;
+
+    public AstExpSingle(AstExp exp)
     {
         serialNumber = AstNodeSerialNumber.getFresh();
 
-        System.out.print("====================== arrayTypeDef -> type ID LBRACKET RBRACKET SEMICOLON\n");
+        System.out.print("====================== exp -> (exp)\n");
 
-        this.name = name;
-        this.type = type;
+        this.exp = exp;
     }
 
     public void printMe()
     {
         /*************************************/
-        /* AST NODE TYPE = AST ARRAY TYPE DEF */
+        /* AST NODE TYPE = AST EXP SINGLE     */
         /*************************************/
-        System.out.format("AST NODE ARRAY TYPE DEF %s\n", name);
+        System.out.print("AST NODE EXP SINGLE\n");
 
         /*****************************/
         /* RECURSIVELY PRINT KIDS   */
         /*****************************/
-        if (type != null) type.printMe();
+        if (exp != null) exp.printMe();
 
         /*********************************/
         /* Print to AST GRAPHVIZ DOT file */
         /*********************************/
         AstGraphviz.getInstance().logNode(
                 serialNumber,
-                String.format("ARRAY TYPE DEF(%s)", name));
+                "EXP\nSINGLE");
 
         /****************************************/
         /* PRINT Edges to AST GRAPHVIZ DOT file */
         /****************************************/
-        if (type != null)
-            AstGraphviz.getInstance().logEdge(serialNumber, type.serialNumber);
+        if (exp != null)
+            AstGraphviz.getInstance().logEdge(serialNumber, exp.serialNumber);
     }
 }

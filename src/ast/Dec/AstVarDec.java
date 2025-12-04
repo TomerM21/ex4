@@ -1,12 +1,21 @@
-package ast;
+package ast.Dec;
+
+import ast.AstGraphviz;
+import ast.AstNodeSerialNumber;
+import ast.AstType;
+import ast.Exp.AstExp;
+import ast.Exp.AstNewExp;
+import ast.Helpers.HelperFunctions;
+import types.Type;
+import types.TypeVoid;
 
 public class AstVarDec extends AstDec {
-    private AstType type;  
+    private AstType typeNode;  
     private String name;
     private AstExp exp;
     private AstNewExp newExp;
 
-    public AstVarDec(AstType type, String name, AstExp exp, AstNewExp newExp)
+    public AstVarDec(AstType typeNode, String name, AstExp exp, AstNewExp newExp)
     {
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -26,7 +35,7 @@ public class AstVarDec extends AstDec {
 		/*******************************/
 		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
-		this.type = type;
+		this.typeNode = typeNode;
         this.name = name;
         this.exp = exp;
         this.newExp = newExp;
@@ -45,7 +54,7 @@ public class AstVarDec extends AstDec {
         /*****************************/
         /* RECURSIVELY PRINT KIDS   */
         /*****************************/
-        if (type != null) type.printMe();
+        if (typeNode != null) typeNode.printMe();
         if (exp != null) exp.printMe();
         if (newExp != null) newExp.printMe();
 
@@ -59,10 +68,28 @@ public class AstVarDec extends AstDec {
         /****************************************/
         /* PRINT Edges to AST GRAPHVIZ DOT file */
         /****************************************/
-        if (type   != null) AstGraphviz.getInstance().logEdge(serialNumber, type.serialNumber);
+        if (typeNode   != null) AstGraphviz.getInstance().logEdge(serialNumber, typeNode.serialNumber);
         if (exp    != null) AstGraphviz.getInstance().logEdge(serialNumber, exp.serialNumber);
         if (newExp != null) AstGraphviz.getInstance().logEdge(serialNumber, newExp.serialNumber);
     }
 
+    @Override
+    public Type SemantMe() {
+        // 1. Check if the type is valid
+        Type varType = typeNode.SemantMe();
+
+        // Type cannot be void
+        if (varType instanceof TypeVoid) {
+            System.out.format("Type of variable %s cannot be void\n", name);
+            HelperFunctions.printErrorAndExit(myLine);
+        }
+
+        // 2. Check if the name is valid
+        // 3. Check if the value (the exp/newExp) is the same type as the declared type
+    }
     
 }
+/*
+varDec ::= type ID [ ASSIGN exp ] SEMICOLON
+| type ID ASSIGN newExp SEMICOLON
+ */

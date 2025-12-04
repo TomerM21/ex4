@@ -1,13 +1,17 @@
-package ast;
+package ast.Stmt;
 
-public class AstExpString extends AstExp {
+import ast.AstCallExp;
+import ast.AstGraphviz;
+import ast.AstNodeSerialNumber;
 
-    public String value;
+public class AstStmtExp extends AstStmt
+{
+    public AstCallExp callExp;
 
     /******************/
     /* CONSTRUCTOR(S) */
     /******************/
-    public AstExpString(String value)
+    public AstStmtExp(AstCallExp callExp)
     {
         /******************************/
         /* SET A UNIQUE SERIAL NUMBER */
@@ -17,37 +21,40 @@ public class AstExpString extends AstExp {
         /***************************************/
         /* PRINT CORRESPONDING DERIVATION RULE */
         /***************************************/
-        System.out.print("====================== exp -> STRING\n");
+        System.out.print("====================== stmt -> callExp ;\n");
 
         /*******************************/
         /* COPY INPUT DATA MEMBERS ... */
         /*******************************/
-        this.value = value;
+        this.callExp = callExp;
     }
 
-    /***************************************************/
-    /* The printing message for a string exp AST node  */
-    /***************************************************/
+    /*****************************************/
+    /* PRINT MESSAGE FOR CALL STMT AST NODE  */
+    /*****************************************/
     public void printMe()
     {
         /*************************************/
-        /* AST NODE TYPE = AST EXP STRING     */
+        /* AST NODE TYPE = AST STMT EXP      */
         /*************************************/
-        System.out.format("AST NODE STRING(%s)\n", value);
+        System.out.print("AST NODE STMT EXP\n");
 
         /*****************************/
-        /* NO CHILDREN TO PRINT     */
+        /* RECURSIVELY PRINT child  */
         /*****************************/
+        if (callExp != null) callExp.printMe();
 
         /*********************************/
-        /* Print to AST GRAPHVIZ DOT file */
+        /* PRINT Node to AST GRAPHVIZ     */
         /*********************************/
         AstGraphviz.getInstance().logNode(
                 serialNumber,
-                String.format("STRING(%s)", value));
+                "STMT\nEXP");
 
         /****************************************/
-        /* NO EDGES — LEAF NODE                 */
+        /* PRINT EDGES to AST GRAPHVIZ DOT file */
         /****************************************/
+        if (callExp != null)
+            AstGraphviz.getInstance().logEdge(serialNumber, callExp.serialNumber);
     }
 }

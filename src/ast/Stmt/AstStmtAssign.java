@@ -1,4 +1,9 @@
-package ast;
+package ast.Stmt;
+
+import ast.AstGraphviz;
+import ast.AstNodeSerialNumber;
+import ast.Exp.AstExp;
+import ast.Var.AstVar;
 
 public class AstStmtAssign extends AstStmt
 {

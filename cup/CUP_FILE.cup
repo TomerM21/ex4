@@ -164,11 +164,11 @@ program     ::=  	decList:l       {:RESULT = new AstProgram(l);:}
 decList	::=			dec:d	decList:l			{: RESULT = new AstDecList(d,l);    :}
 					|	dec:d					{: RESULT = new AstDecList(d,null); :}
 					;
-
-dec ::=      				varDec:v 		{:RESULT = new AstDecSingle(v);			:}
-					| 		funcDec:v 		{:RESULT = new AstDecSingle(v);			:}
-					|		classDec:v 		{:RESULT = new AstDecSingle(v);			:}
-					|		arrayTypedef:v 	{:RESULT = new AstDecSingle(v);			:}
+					
+dec ::=      				varDec
+					| 		funcDec
+					|		classDec
+					|		arrayTypedef
 					; 
 
 type ::= 					TYPE_INT		{: RESULT = new AstType("int"); 		:}

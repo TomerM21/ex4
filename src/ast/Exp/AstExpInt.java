@@ -1,48 +1,48 @@
-package ast;
+package ast.Exp;
 
-public class AstVarSimple extends AstVar
+import ast.AstGraphviz;
+import ast.AstNodeSerialNumber;
+
+public class AstExpInt extends AstExp
 {
-	/************************/
-	/* simple variable name */
-	/************************/
-	public String name;
+	public int value;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AstVarSimple(String name)
+	public AstExpInt(int value)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
 		/******************************/
 		serialNumber = AstNodeSerialNumber.getFresh();
-	
+
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		System.out.format("====================== var -> ID( %s )\n",name);
+		System.out.format("====================== exp -> INT( %d )\n", value);
 
 		/*******************************/
 		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
-		this.name = name;
+		this.value = value;
 	}
 
-	/**************************************************/
-	/* The printing message for a simple var AST node */
-	/**************************************************/
+	/************************************************/
+	/* The printing message for an int exp AST node */
+	/************************************************/
 	public void printMe()
 	{
-		/**********************************/
-		/* AST NODE TYPE = AST SIMPLE VAR */
-		/**********************************/
-		System.out.format("AST NODE SIMPLE VAR( %s )\n",name);
+		/*******************************/
+		/* AST NODE TYPE = AST INT EXP */
+		/*******************************/
+		System.out.format("AST NODE INT( %d )\n",value);
 
 		/*********************************/
 		/* Print to AST GRAPHVIZ DOT file */
 		/*********************************/
 		AstGraphviz.getInstance().logNode(
 				serialNumber,
-			String.format("SIMPLE\nVAR\n(%s)",name));
+			String.format("INT(%d)",value));
 	}
 }

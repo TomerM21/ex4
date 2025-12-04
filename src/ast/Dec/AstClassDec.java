@@ -1,4 +1,8 @@
-package ast;
+package ast.Dec;
+
+import ast.AstCFieldList;
+import ast.AstGraphviz;
+import ast.AstNodeSerialNumber;
 
 public class AstClassDec extends AstDec {
     private String name;
