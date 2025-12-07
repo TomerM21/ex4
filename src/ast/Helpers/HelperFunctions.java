@@ -1,6 +1,8 @@
 package ast.Helpers;
 
 import java.io.PrintWriter;
+import symboltable.SymbolTable;
+import types.*;
 
 public class HelperFunctions {
     public static PrintWriter file_writer;
@@ -17,4 +19,36 @@ public class HelperFunctions {
         }
         System.exit(0);
     }
-}
+
+    public static boolean existsInCurrentScope(String name) {
+        SymbolTable tbl = SymbolTable.getInstance();
+        return tbl.findInScope(name) != null;
+    }
+
+    public static boolean canAssign(Type target, Type source) {
+        // null source (i think shoulnt happen)
+        if (source == null || target == null) return false;
+        
+        // same type
+        if (target == source) return true;
+
+        // nil allowed only for class types
+        if (source instanceof TypeNil) {
+            return target instanceof TypeClass;
+        }
+
+        // inheritance check for class types
+        if (target instanceof TypeClass && source instanceof TypeClass) {
+            TypeClass src = (TypeClass) source;
+            while (src != null) {
+                if (src == target) return true;
+                src = src.father;
+            }
+            return false;
+        }
+
+        // no other assignments allowed
+        return false;
+    }
+
+}   

@@ -23,4 +23,7 @@ public class TypeVoid extends Type
 		}
 		return instance;
 	}
+
+	@Override
+	public boolean isVoid() { return true; }
 }

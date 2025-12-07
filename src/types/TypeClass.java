@@ -1,5 +1,7 @@
 package types;
 
+import java.util.HashMap;
+
 public class TypeClass extends Type
 {
 	/*********************************************************************/
@@ -14,6 +16,9 @@ public class TypeClass extends Type
 	/**************************************************/
 	public TypeList dataMembers;
 	
+	public HashMap<String, Type> fields = new HashMap<>();
+	public HashMap<String, TypeFunction> methods = new HashMap<>();
+
 	/****************/
 	/* CTROR(S) ... */
 	/****************/
@@ -22,5 +27,54 @@ public class TypeClass extends Type
 		this.name = name;
 		this.father = father;
 		this.dataMembers = dataMembers;
+	}
+
+	@Override
+	public boolean isClass(){ return true;}
+
+	public Type lookupField(String fieldName)
+	{
+		// Look in current class
+		if (fields.containsKey(fieldName)) {
+			return fields.get(fieldName);
+		}
+		// Check father recursively
+		if (father != null) {
+			return father.lookupField(fieldName);
+		}
+		// Not found
+		return null;
+	}
+
+	public TypeFunction lookupMethod(String methodName)
+	{
+		// Look in current class
+		if (methods.containsKey(methodName)) {
+			return methods.get(methodName);
+		}
+		// Check father recursively
+		if (father != null) {
+			return father.lookupMethod(methodName);
+		}
+		// Not found
+		return null;
+	}
+
+	public void splitMembers() {
+    	TypeList it = dataMembers;
+
+		while (it != null && it.head != null) {
+			Type t = it.head;
+
+			if (t instanceof TypeClassVarDec) {
+				TypeClassVarDec varDec = (TypeClassVarDec) t;
+				fields.put(varDec.name, varDec.t);
+			}
+			else if (t instanceof TypeFunction) {
+				TypeFunction func = (TypeFunction) t;
+				methods.put(func.name, func);
+			}
+			it = it.tail;
+		}
 	}
 }

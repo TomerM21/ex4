@@ -3,6 +3,9 @@ package ast.Dec;
 import ast.AstCFieldList;
 import ast.AstGraphviz;
 import ast.AstNodeSerialNumber;
+import ast.Helpers.HelperFunctions;
+import symboltable.SymbolTable;
+import types.*;
 
 public class AstClassDec extends AstDec {
     private String name;
@@ -50,5 +53,47 @@ public class AstClassDec extends AstDec {
         /****************************************/
         if (dataMemberList != null)
             AstGraphviz.getInstance().logEdge(serialNumber, dataMemberList.serialNumber);
+    }
+
+    @Override
+    public Type SemantMe() {
+        SymbolTable tbl = SymbolTable.getInstance();
+
+        // check that class name doesnt
+        if (HelperFunctions.existsInCurrentScope(name)) {
+            error();
+        }
+
+        // handle extends
+        TypeClass fatherType = null;
+        if (extends_name != null) {
+            Type t = tbl.find(extends_name);
+            if (!(t instanceof TypeClass)) {
+                error();
+            }
+
+            fatherType = (TypeClass) t;
+        }
+
+        // create class type and enter to symbol table so we can reference it recursively inside class
+        TypeClass myClassType = new TypeClass(fatherType, name, null);
+        tbl.enter(name, myClassType);
+
+        // begin new scope for class fields
+        tbl.beginScope();
+
+        // semant data members
+        TypeList members = null;
+        if (dataMemberList != null) {
+            members = (TypeList) dataMemberList.SemantMe();
+        }
+
+        // attach to class
+        myClassType.dataMembers = members;
+
+        // end scope for class fields
+        tbl.endScope();
+
+        return myClassType; 
     }
 }

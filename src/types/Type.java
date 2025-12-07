@@ -7,13 +7,17 @@ public abstract class Type
 	/******************************/
 	public String name;
 
-	/*************/
-	/* isClass() */
-	/*************/
 	public boolean isClass(){ return false;}
 
-	/*************/
-	/* isArray() */
-	/*************/
 	public boolean isArray(){ return false;}
+
+	public boolean isFunction()  { return false; }
+
+    public boolean isInt()       { return false; }
+
+    public boolean isString()    { return false; }
+	
+    public boolean isVoid()      { return false; }
+
+	public boolean isNil()       { return false; }
 }

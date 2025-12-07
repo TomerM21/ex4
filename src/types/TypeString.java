@@ -24,4 +24,7 @@ public class TypeString extends Type
 		}
 		return instance;
 	}
+
+	@Override
+	public boolean isString() { return true; }
 }

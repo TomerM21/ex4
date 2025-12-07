@@ -3,6 +3,9 @@ package ast.Dec;
 import ast.AstGraphviz;
 import ast.AstNodeSerialNumber;
 import ast.AstType;
+import ast.Helpers.HelperFunctions;
+import symboltable.SymbolTable;
+import types.*;
 
 public class AstArrayTypeDef extends AstDec {
     private String name;
@@ -42,5 +45,28 @@ public class AstArrayTypeDef extends AstDec {
         /****************************************/
         if (type != null)
             AstGraphviz.getInstance().logEdge(serialNumber, type.serialNumber);
+    }
+
+    @Override
+    public Type SemantMe()
+    {   
+        // inner type must exist
+        Type inner = type.SemantMe();
+        if (inner == null) {
+            error();
+        }
+
+        // name must be unique in current scope
+        if (HelperFunctions.existsInCurrentScope(name)) {
+            error();
+        }
+
+        // crate array type
+        TypeArray arrType = new TypeArray(name, inner);
+
+        // enter type to symbol table
+        SymbolTable.getInstance().enter(name, arrType);
+
+        return null;
     }
 }

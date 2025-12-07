@@ -1,6 +1,8 @@
 package ast;
+import ast.Helpers.AstList;
 
-public class AstCFieldList extends AstNode {
+
+public class AstCFieldList extends AstList {
 
     public AstCField head;
     public AstCFieldList tail;
@@ -44,4 +46,16 @@ public class AstCFieldList extends AstNode {
         if (head != null) AstGraphviz.getInstance().logEdge(serialNumber, head.serialNumber);
         if (tail != null) AstGraphviz.getInstance().logEdge(serialNumber, tail.serialNumber);
     }
+
+    @Override
+    public AstNode getHead() {
+        return head;
+    }
+
+    @Override
+    public AstList getTail() {
+        return tail;
+    }
+
+    // Semant me of astList
 }

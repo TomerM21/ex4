@@ -3,8 +3,9 @@ package ast.Dec;
 import ast.AstGraphviz;
 import ast.AstNode;
 import ast.AstNodeSerialNumber;
+import ast.Helpers.AstList;
 
-public class AstDecList extends AstNode extends AstList
+public class AstDecList extends AstList
 {
     /****************/
     /* DATA MEMBERS */
@@ -34,8 +35,6 @@ public class AstDecList extends AstNode extends AstList
         this.head = head;
         this.tail = tail;
 
-        left = head;
-        right = tail;
     }
 
     /******************************************************/
@@ -67,16 +66,12 @@ public class AstDecList extends AstNode extends AstList
         if (head != null) AstGraphviz.getInstance().logEdge(serialNumber, head.serialNumber);
         if (tail != null) AstGraphviz.getInstance().logEdge(serialNumber, tail.serialNumber);
     }
-
-    @Override
-    public AstDec getHead() {
-        return this.head;
-    }
-
-    @Override
-    public AstDecList getTail() {
-        return this.tail;
-    }
-
     
+    @Override
+    public AstNode getHead() { return head; }
+
+    @Override
+    public AstList getTail() { return tail; }
+    
+    // use semantMe of AstList
 }

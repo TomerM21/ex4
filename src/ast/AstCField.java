@@ -1,6 +1,7 @@
 package ast;
 
 import ast.Dec.AstDec;
+import types.*;  
 
 public class AstCField extends AstNode {
 
@@ -37,5 +38,10 @@ public class AstCField extends AstNode {
         /****************************************/
         if (dec != null)
             AstGraphviz.getInstance().logEdge(serialNumber, dec.serialNumber);
+    }
+
+    @Override
+    public Type SemantMe() {
+        return dec.SemantMe();   
     }
 }

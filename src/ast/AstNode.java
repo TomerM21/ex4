@@ -1,38 +1,26 @@
 package ast;
 
+import ast.Helpers.HelperFunctions;
 import types.Type;
 
-public abstract class AstNode
-{
-	/*******************************************/
-	/* The serial number is for debug purposes */
-	/* In particular, it can help in creating  */
-	/* a graphviz dot format of the AST ...    */
-	/*******************************************/
-	public int serialNumber;
+public abstract class AstNode {
 
-	public static int currLine = 0; // TODO!!!
-    public int myLine = currLine;
+    public int serialNumber;
 
-	public AstNode left = null;
+    public static int currLine = 0; // TODO WHILE PARSING SET THIS TO THE CURRENT LINE
+    public int lineNumber = currLine; 
+
+    public AstNode left = null;
     public AstNode right = null;
 
-
-	/***********************************************/
-	/* The default message for an unknown AST node */
-	/***********************************************/
-	public void printMe()
-	{
-		System.out.print("AST NODE UNKNOWN\n");
-	}
-
-	public AstNode getLeft() {
-        return left;
+    public void printMe() {
+        System.out.print("AST NODE UNKNOWN\n");
     }
 
-    public AstNode getRight(){
-        return right;
-    }
+    // Semantic default
+    public Type SemantMe() { return null; }
 
-    public Type SemantMe() {return null;}
+    public void error() {
+        HelperFunctions.printErrorAndExit(this.lineNumber);
+    }
 }

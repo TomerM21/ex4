@@ -6,14 +6,15 @@ import ast.AstType;
 import ast.Exp.AstExp;
 import ast.Exp.AstNewExp;
 import ast.Helpers.HelperFunctions;
+import symboltable.SymbolTable;
 import types.Type;
 import types.TypeVoid;
 
 public class AstVarDec extends AstDec {
-    private AstType typeNode;  
-    private String name;
-    private AstExp exp;
-    private AstNewExp newExp;
+    private AstType typeNode; // int, string, void, A, B, ... 
+    private String name; // string name of the var
+    private AstExp exp; // optional initialization expression
+    private AstNewExp newExp; // optional new expression for class types
 
     public AstVarDec(AstType typeNode, String name, AstExp exp, AstNewExp newExp)
     {
@@ -72,22 +73,49 @@ public class AstVarDec extends AstDec {
         if (exp    != null) AstGraphviz.getInstance().logEdge(serialNumber, exp.serialNumber);
         if (newExp != null) AstGraphviz.getInstance().logEdge(serialNumber, newExp.serialNumber);
     }
-
+    
     @Override
-    public Type SemantMe() {
-        // 1. Check if the type is valid
+    public Type SemantMe()
+    {
+        // get declared type
         Type varType = typeNode.SemantMe();
 
-        // Type cannot be void
-        if (varType instanceof TypeVoid) {
-            System.out.format("Type of variable %s cannot be void\n", name);
-            HelperFunctions.printErrorAndExit(myLine);
+        // Type must exist
+        if (varType == null) {
+            error();
         }
 
-        // 2. Check if the name is valid
-        // 3. Check if the value (the exp/newExp) is the same type as the declared type
+        // void type is not allowed
+        if (varType instanceof TypeVoid) {
+            error();
+        }
+
+        // check if name already exists in the current scope, shadowing not allowed
+        if (HelperFunctions.existsInCurrentScope(name)) {
+            error();
+        }
+
+        // add variable to symbol table
+        SymbolTable.getInstance().enter(name, varType);
+
+        // if there is an initialization expression, check its type
+        if (exp != null) {
+            Type expType = exp.SemantMe();
+            if (!HelperFunctions.canAssign(varType, expType)) {
+                error();
+            }
+        }
+
+        // if there is a new expression, check its type
+        if (newExp != null) {
+            Type newType = newExp.SemantMe();
+            if (!HelperFunctions.canAssign(varType, newType)) {
+                error();
+            }
+        }
+        
+        return null; 
     }
-    
 }
 /*
 varDec ::= type ID [ ASSIGN exp ] SEMICOLON
