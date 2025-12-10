@@ -3,6 +3,7 @@ package ast.Exp;
 import ast.AstGraphviz;
 import ast.AstNodeSerialNumber;
 
+import types.Type;
 public class AstExpBinop extends AstExp
 {
 	int op;
@@ -73,4 +74,46 @@ public class AstExpBinop extends AstExp
 		if (left  != null) AstGraphviz.getInstance().logEdge(serialNumber,left.serialNumber);
 		if (right != null) AstGraphviz.getInstance().logEdge(serialNumber,right.serialNumber);
 	}
+	@Override
+    public Type SemantMe() {
+        Type t1 = left.SemantMe();
+        Type t2 = right.SemantMe();
+
+        // 1. Equality Check (EQ: 6)
+        if (op == 6) {
+            // Check if types are compatible (Same type, or Class inheritance, or Nil)
+            if (!ast.Helpers.HelperFunctions.canAssign(t1, t2) && 
+                !ast.Helpers.HelperFunctions.canAssign(t2, t1)) {
+                 System.out.println(">> ERROR: Equality check type mismatch");
+                 error();
+            }
+            return types.TypeInt.getInstance();
+        }
+
+        // 2. Addition (PLUS: 0) - Supports Ints and Strings
+        if (op == 0) {
+            if (t1.isInt() && t2.isInt()) return types.TypeInt.getInstance();
+            if (t1.isString() && t2.isString()) return types.TypeString.getInstance();
+            System.out.println(">> ERROR: Plus must be between two Ints or two Strings");
+            error();
+        }
+
+        // 3. Other Math/Relational Ops (-, *, /, <, >) - Ints only
+        if (!t1.isInt() || !t2.isInt()) {
+            System.out.println(">> ERROR: Arithmetic operation on non-int types");
+            error();
+        }
+        
+        // 4. Division by Zero Check (Constant folding)
+        if (op == 3) { // DIVIDE
+             if (right instanceof AstExpInt) {
+                 if (((AstExpInt)right).value == 0) {
+                     System.out.println(">> ERROR: Division by zero");
+                     error();
+                 }
+             }
+        }
+
+        return types.TypeInt.getInstance();
+    }
 }

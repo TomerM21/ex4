@@ -2,6 +2,7 @@ package ast.Var;
 
 import ast.AstGraphviz;
 import ast.AstNodeSerialNumber;
+import types.Type;
 
 public class AstVarSimple extends AstVar
 {
@@ -48,4 +49,17 @@ public class AstVarSimple extends AstVar
 				serialNumber,
 			String.format("SIMPLE\nVAR\n(%s)",name));
 	}
+	@Override
+    public Type SemantMe() {
+        // 1. Look for the name in the Symbol Table
+        Type t = symboltable.SymbolTable.getInstance().find(name);
+        
+        // 2. If not found, it's an error
+        if (t == null) {
+            System.out.format(">> ERROR: Variable %s not found\n", name);
+            error();
+        }
+        
+        return t;
+    }
 }

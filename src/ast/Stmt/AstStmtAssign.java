@@ -3,7 +3,9 @@ package ast.Stmt;
 import ast.AstGraphviz;
 import ast.AstNodeSerialNumber;
 import ast.Exp.AstExp;
+import ast.Helpers.HelperFunctions;
 import ast.Var.AstVar;
+import types.Type;
 
 public class AstStmtAssign extends AstStmt
 {
@@ -64,4 +66,15 @@ public class AstStmtAssign extends AstStmt
 		AstGraphviz.getInstance().logEdge(serialNumber,var.serialNumber);
 		AstGraphviz.getInstance().logEdge(serialNumber,exp.serialNumber);
 	}
+	@Override
+    public Type SemantMe() {
+        Type varType = var.SemantMe();
+        Type expType = exp.SemantMe();
+
+        if (!HelperFunctions.canAssign(varType, expType)) {
+             System.out.format(">> ERROR: Cannot assign type %s to %s\n", expType.name, varType.name);
+             error();
+        }
+        return null;
+    }
 }

@@ -2,6 +2,8 @@ package ast.Exp;
 
 import ast.AstGraphviz;
 import ast.AstNodeSerialNumber;
+import types.TypeString;
+import types.Type;
 
 public class AstExpString extends AstExp {
 
@@ -53,4 +55,8 @@ public class AstExpString extends AstExp {
         /* NO EDGES — LEAF NODE                 */
         /****************************************/
     }
+    @Override
+    public Type SemantMe() {
+        return TypeString.getInstance();
+}
 }

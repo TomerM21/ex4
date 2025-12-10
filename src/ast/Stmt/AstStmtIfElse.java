@@ -3,6 +3,8 @@ package ast.Stmt;
 import ast.AstGraphviz;
 import ast.AstNodeSerialNumber;
 import ast.Exp.AstExp;
+import symboltable.SymbolTable;
+import types.Type;
 
 public class AstStmtIfElse extends AstStmt
 {
@@ -68,5 +70,25 @@ public class AstStmtIfElse extends AstStmt
 
         if (elseBody != null)
             AstGraphviz.getInstance().logEdge(serialNumber, elseBody.serialNumber);
+    }
+    @Override
+    public Type SemantMe() {
+        Type condType = cond.SemantMe();
+        if (!condType.isInt()) {
+            System.out.println(">> ERROR: If condition must be int");
+            error();
+        }
+        
+        // If Body
+        SymbolTable.getInstance().beginScope();
+        if (body != null) body.SemantMe();
+        SymbolTable.getInstance().endScope();
+
+        // Else Body
+        SymbolTable.getInstance().beginScope();
+        if (elseBody != null) elseBody.SemantMe();
+        SymbolTable.getInstance().endScope();
+        
+        return null;
     }
 }

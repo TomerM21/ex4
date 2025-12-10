@@ -2,6 +2,7 @@ package ast.Exp;
 
 import ast.AstGraphviz;
 import ast.AstNodeSerialNumber;
+import types.*;
 
 public class AstExpInt extends AstExp
 {
@@ -45,4 +46,8 @@ public class AstExpInt extends AstExp
 				serialNumber,
 			String.format("INT(%d)",value));
 	}
+	@Override
+	public Type SemantMe() {
+    	return TypeInt.getInstance();
+}
 }

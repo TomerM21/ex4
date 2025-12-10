@@ -3,6 +3,7 @@ package ast.Stmt;
 import ast.AstGraphviz;
 import ast.AstNode;
 import ast.AstNodeSerialNumber;
+import types.Type;
 
 public class AstStmtList extends AstNode
 {
@@ -63,6 +64,12 @@ public class AstStmtList extends AstNode
 		/****************************************/
 		if (head != null) AstGraphviz.getInstance().logEdge(serialNumber,head.serialNumber);
 		if (tail != null) AstGraphviz.getInstance().logEdge(serialNumber,tail.serialNumber);
+	}
+	@Override
+	public Type SemantMe() {
+		if (head != null) head.SemantMe();
+		if (tail != null) tail.SemantMe();
+		return null;
 	}
 	
 }

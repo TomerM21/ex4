@@ -50,5 +50,19 @@ public class HelperFunctions {
         // no other assignments allowed
         return false;
     }
+    public static Type getTypeFromString(String typeName) {
+        switch (typeName) {
+            case "int":
+                return TypeInt.getInstance(); //optional
+            case "string":
+                return TypeString.getInstance(); //optional
+            case "void":
+                return TypeVoid.getInstance(); //optional
+            case "nil":
+                return TypeNil.getInstance(); //optional
+            default:
+                return SymbolTable.getInstance().find(typeName);
+        }
+    }
 
 }   

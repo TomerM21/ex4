@@ -3,6 +3,7 @@ package ast.Exp;
 import ast.AstGraphviz;
 import ast.AstNodeSerialNumber;
 import ast.Var.AstVar;
+import types.Type;
 
 public class AstExpVar extends AstExp
 {
@@ -57,4 +58,8 @@ public class AstExpVar extends AstExp
 		AstGraphviz.getInstance().logEdge(serialNumber,var.serialNumber);
 			
 	}
+	@Override
+    public Type SemantMe() {
+        return var.SemantMe();
+    }
 }

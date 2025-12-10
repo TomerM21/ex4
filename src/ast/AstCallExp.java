@@ -3,6 +3,7 @@ package ast;
 import ast.Exp.AstExp;
 import ast.Exp.AstExpList;
 import ast.Var.AstVar;
+import types.Type;
 
 public class AstCallExp extends AstExp {
 
@@ -71,5 +72,64 @@ public class AstCallExp extends AstExp {
 
         if (args != null)
             AstGraphviz.getInstance().logEdge(serialNumber, args.serialNumber);
+    }
+    @Override
+    public Type SemantMe() {
+        types.TypeFunction funcType = null;
+
+        // 1. Find the Function
+        if (receiver == null) {
+            // Regular function call: foo()
+            Type t = symboltable.SymbolTable.getInstance().find(methodName);
+            if (t == null || !(t instanceof types.TypeFunction)) {
+                System.out.format(">> ERROR: Function %s not found\n", methodName);
+                error();
+            }
+            funcType = (types.TypeFunction) t;
+        } else {
+            // Method call: obj.foo()
+            Type recvType = receiver.SemantMe();
+            if (!(recvType instanceof types.TypeClass)) {
+                System.out.println(">> ERROR: Method call on non-class type");
+                error();
+            }
+            types.TypeClass tc = (types.TypeClass) recvType;
+            funcType = tc.lookupMethod(methodName);
+            if (funcType == null) {
+                System.out.format(">> ERROR: Method %s not found in class %s\n", methodName, tc.name);
+                error();
+            }
+        }
+
+        // 2. Validate Arguments
+        types.TypeList paramList = funcType.params;
+        
+        types.TypeList argList = null;
+        if (args != null) {
+            argList = (types.TypeList) args.SemantMe(); 
+        }
+
+        // --- DELETED UNUSED VARIABLES HERE ---
+        
+        // Iterate using the lists directly
+        types.TypeList pNode = paramList;
+        types.TypeList aNode = argList;
+
+        while (pNode != null && aNode != null) {
+            if (!ast.Helpers.HelperFunctions.canAssign(pNode.head, aNode.head)) {
+                System.out.println(">> ERROR: Argument type mismatch");
+                error();
+            }
+            pNode = pNode.tail;
+            aNode = aNode.tail;
+        }
+
+        // 3. Check Argument Count
+        if (pNode != null || aNode != null) {
+            System.out.println(">> ERROR: Argument count mismatch");
+            error();
+        }
+
+        return funcType.returnType;
     }
 }

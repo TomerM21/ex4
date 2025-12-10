@@ -2,6 +2,7 @@ package ast.Exp;
 
 import ast.AstGraphviz;
 import ast.AstNodeSerialNumber;
+import types.Type;
 
 public class AstExpSingle extends AstExp {
 
@@ -40,5 +41,9 @@ public class AstExpSingle extends AstExp {
         /****************************************/
         if (exp != null)
             AstGraphviz.getInstance().logEdge(serialNumber, exp.serialNumber);
+    }
+    @Override
+    public Type SemantMe() {
+        return exp.SemantMe();
     }
 }

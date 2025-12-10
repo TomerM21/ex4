@@ -62,6 +62,7 @@ public class SymbolTable
 		}
 		return null;
 	}
+	public Type currentFunctionReturnType = null;
 
 	/***************************************************************************/
 	/* begine scope = Enter the <SCOPE-BOUNDARY> element to the data structure */
@@ -193,6 +194,8 @@ public class SymbolTable
 			/*****************************************/
 			instance.enter("int",   TypeInt.getInstance());
 			instance.enter("string", TypeString.getInstance());
+			instance.enter("void", TypeVoid.getInstance());
+			instance.enter("nil", TypeNil.getInstance());
 
 			/*************************************/
 			/* [2] How should we handle void ??? */

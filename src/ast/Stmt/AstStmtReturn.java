@@ -3,6 +3,11 @@ package ast.Stmt;
 import ast.AstGraphviz;
 import ast.AstNodeSerialNumber;
 import ast.Exp.AstExp;
+import ast.Helpers.HelperFunctions;
+import symboltable.SymbolTable;
+import types.TypeVoid;
+import types.Type;
+
 
 public class AstStmtReturn extends AstStmt
 {
@@ -59,5 +64,27 @@ public class AstStmtReturn extends AstStmt
         /****************************************/
         if (exp != null)
             AstGraphviz.getInstance().logEdge(serialNumber, exp.serialNumber);
+    }
+    @Override
+    public Type SemantMe() {
+        // Retrieve the return type of the function we are currently in
+        Type expected = SymbolTable.getInstance().currentFunctionReturnType;
+        
+        if (expected == null) {
+            // Should not happen if parser is correct (return outside function)
+            error(); 
+        }
+
+        Type actual = TypeVoid.getInstance(); // Default for empty return
+        if (exp != null) {
+            actual = exp.SemantMe();
+        }
+
+        if (!HelperFunctions.canAssign(expected, actual)) {
+            System.out.println(">> ERROR: Return type mismatch");
+            error();
+        }
+
+        return null;
     }
 }

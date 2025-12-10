@@ -2,6 +2,7 @@ package ast.Var;
 
 import ast.AstGraphviz;
 import ast.AstNodeSerialNumber;
+import types.Type;
 
 public class AstVarField extends AstVar
 {
@@ -58,4 +59,26 @@ public class AstVarField extends AstVar
 		/****************************************/
 		if (var != null) AstGraphviz.getInstance().logEdge(serialNumber,var.serialNumber);
 	}
+	@Override
+    public Type SemantMe() {
+        // 1. Analyze the variable on the left (e.g., "x" in "x.y")
+        Type t = var.SemantMe();
+        
+        // 2. Ensure it is a Class Type
+        if (t == null || !(t instanceof types.TypeClass)) {
+            System.out.println(">> ERROR: Accessing field of non-class type");
+            error();
+        }
+        
+        // 3. Look up the field inside that class
+        types.TypeClass tc = (types.TypeClass) t;
+        Type fieldType = tc.lookupField(fieldName);
+        
+        if (fieldType == null) {
+            System.out.format(">> ERROR: Field %s not found in class %s\n", fieldName, tc.name);
+            error();
+        }
+        
+        return fieldType;
+    }
 }

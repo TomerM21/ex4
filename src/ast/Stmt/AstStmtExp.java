@@ -3,7 +3,8 @@ package ast.Stmt;
 import ast.AstCallExp;
 import ast.AstGraphviz;
 import ast.AstNodeSerialNumber;
-
+import ast.Exp.AstExp;
+import types.Type;
 public class AstStmtExp extends AstStmt
 {
     public AstCallExp callExp;
@@ -57,4 +58,9 @@ public class AstStmtExp extends AstStmt
         if (callExp != null)
             AstGraphviz.getInstance().logEdge(serialNumber, callExp.serialNumber);
     }
+    @Override
+    public Type SemantMe() {
+        callExp.SemantMe();
+        return null;
+}
 }

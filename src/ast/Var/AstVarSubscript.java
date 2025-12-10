@@ -3,6 +3,7 @@ package ast.Var;
 import ast.AstGraphviz;
 import ast.AstNodeSerialNumber;
 import ast.Exp.AstExp;
+import types.Type;
 
 public class AstVarSubscript extends AstVar
 {
@@ -60,4 +61,27 @@ public class AstVarSubscript extends AstVar
 		if (var       != null) AstGraphviz.getInstance().logEdge(serialNumber,var.serialNumber);
 		if (subscript != null) AstGraphviz.getInstance().logEdge(serialNumber,subscript.serialNumber);
 	}
+	@Override
+    public Type SemantMe() {
+        // 1. Analyze the array variable
+        Type t = var.SemantMe();
+        
+        // 2. Ensure it is an Array Type
+        if (t == null || !(t instanceof types.TypeArray)) {
+            System.out.println(">> ERROR: Subscripting non-array type");
+            error();
+        }
+        
+        // 3. Analyze the index expression
+        Type indexType = subscript.SemantMe();
+        
+        // 4. Ensure index is an Integer
+        if (!indexType.isInt()) {
+            System.out.println(">> ERROR: Array index must be int");
+            error();
+        }
+        
+        // 5. Return the type of elements inside the array
+        return ((types.TypeArray) t).elementType;
+    }
 }

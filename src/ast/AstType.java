@@ -1,5 +1,10 @@
 package ast;
 
+import ast.Helpers.HelperFunctions;
+import symboltable.SymbolTable;
+import types.Type;
+import types.TypeVoid;
+
 public class AstType extends AstNode {
     
     public String typeName;
@@ -26,5 +31,15 @@ public class AstType extends AstNode {
                 serialNumber,
                 String.format("TYPE(%s)", typeName)
         );
+    }
+    
+    @Override
+    public Type SemantMe()
+    {
+        Type type = HelperFunctions.getTypeFromString(typeName);
+        if (type == null) {
+            error();
+        }
+        return type;
     }
 }

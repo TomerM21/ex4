@@ -8,6 +8,7 @@ import ast.Exp.AstNewExp;
 import ast.Helpers.HelperFunctions;
 import symboltable.SymbolTable;
 import types.Type;
+import types.TypeClassVarDec;
 import types.TypeVoid;
 
 public class AstVarDec extends AstDec {
@@ -75,30 +76,21 @@ public class AstVarDec extends AstDec {
     }
     
     @Override
-    public Type SemantMe()
-    {
-        // get declared type
+    public Type SemantMe() {
+        // 1. Resolve the declared type (e.g., "int", "string", "Person")
         Type varType = typeNode.SemantMe();
 
-        // Type must exist
-        if (varType == null) {
+        // 2. Validate Type: Must exist and cannot be void
+        if (varType == null || varType instanceof TypeVoid) {
             error();
         }
 
-        // void type is not allowed
-        if (varType instanceof TypeVoid) {
-            error();
-        }
-
-        // check if name already exists in the current scope, shadowing not allowed
+        // 3. Shadowing Check: Name must be unique in the current scope
         if (HelperFunctions.existsInCurrentScope(name)) {
             error();
         }
 
-        // add variable to symbol table
-        SymbolTable.getInstance().enter(name, varType);
-
-        // if there is an initialization expression, check its type
+        // 4. Check Initialization Expression (if exists: int x := 5;)
         if (exp != null) {
             Type expType = exp.SemantMe();
             if (!HelperFunctions.canAssign(varType, expType)) {
@@ -106,15 +98,20 @@ public class AstVarDec extends AstDec {
             }
         }
 
-        // if there is a new expression, check its type
+        // 5. Check New Expression (if exists: Person p := new Person;)
         if (newExp != null) {
             Type newType = newExp.SemantMe();
             if (!HelperFunctions.canAssign(varType, newType)) {
                 error();
             }
         }
-        
-        return null; 
+
+        // 6. Enter Variable into Symbol Table (So subsequent code can use it)
+        SymbolTable.getInstance().enter(name, varType);
+
+        // 7. RETURN THE WRAPPER
+        // This allows AstClassDec to know the name of this variable later.
+        return new TypeClassVarDec(varType, name); 
     }
 }
 /*
