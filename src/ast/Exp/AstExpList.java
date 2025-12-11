@@ -5,10 +5,10 @@ import ast.AstNode;
 import ast.AstNodeSerialNumber;
 import types.TypeList;
 import types.Type;
+import ast.Helplers.AstList;
 
 
-
-public class AstExpList extends AstNode
+public class AstExpList extends AstList
 {
     public AstExp head;
     public AstExpList tail;

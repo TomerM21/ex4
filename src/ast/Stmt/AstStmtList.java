@@ -4,8 +4,9 @@ import ast.AstGraphviz;
 import ast.AstNode;
 import ast.AstNodeSerialNumber;
 import types.Type;
+import ast.Helplers.AstList;
 
-public class AstStmtList extends AstNode
+public class AstStmtList extends AstList
 {
 	/****************/
 	/* DATA MEMBERS */

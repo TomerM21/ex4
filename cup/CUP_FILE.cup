@@ -7,6 +7,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import ast.Dec.*; // TomerZ: added after ex3 folder creation inside ast.
+import ast.Exp.*;
+import ast.Stmt.*;
+import ast.Var.*;
+
 parser code 
 {:
 	public Lexer lexer;
@@ -51,6 +56,7 @@ parser code
 scan with
 {:
 	Symbol s;
+	AstNode.currLine = lexer.getLine(); // Tomer added this in ex3 for error msg during semantMe
 	s = lexer.next_token();
 	/* Lexical Error: */
 	if (s.sym == TokenNames.error) 

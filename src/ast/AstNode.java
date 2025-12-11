@@ -7,7 +7,7 @@ public abstract class AstNode {
 
     public int serialNumber;
 
-    public static int currLine = 0; // TODO WHILE PARSING SET THIS TO THE CURRENT LINE
+    public static int currLine = 0; // Check TomerZ
     public int lineNumber = currLine; 
 
     public AstNode left = null;
