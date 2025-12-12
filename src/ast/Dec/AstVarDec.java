@@ -77,6 +77,7 @@ public class AstVarDec extends AstDec {
     
     @Override
     public Type SemantMe() {
+        System.out.println("### SEMANT GOING (VAR DEC) ###");
         // 1. Resolve the declared type (e.g., "int", "string", "Person")
         Type varType = typeNode.SemantMe();
 

@@ -1,5 +1,10 @@
 package ast;
 
+import types.Type;
+import types.TypeList;
+
+import ast.Helpers.AstList;
+
 public class AstTypeList extends AstNode {
 
     public AstType type;
@@ -46,4 +51,20 @@ public class AstTypeList extends AstNode {
         if (type != null) AstGraphviz.getInstance().logEdge(serialNumber, type.serialNumber);
         if (tail != null) AstGraphviz.getInstance().logEdge(serialNumber, tail.serialNumber);
     }
+
+    @Override
+    public Type SemantMe() {
+
+        Type headType = null;
+        TypeList tailList = null;
+
+        if (type != null)
+            headType = type.SemantMe();
+
+        if (tail != null)
+            tailList = (TypeList) tail.SemantMe();
+
+        return new TypeList(headType, tailList);
+    }
+
 }

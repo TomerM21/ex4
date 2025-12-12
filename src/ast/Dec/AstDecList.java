@@ -4,6 +4,7 @@ import ast.AstGraphviz;
 import ast.AstNode;
 import ast.AstNodeSerialNumber;
 import ast.Helpers.AstList;
+import types.*;
 
 public class AstDecList extends AstList
 {
@@ -74,4 +75,20 @@ public class AstDecList extends AstList
     public AstList getTail() { return tail; }
     
     // use semantMe of AstList
+    @Override
+    public TypeList SemantMe() {
+        System.out.println("### SEMANT GOING (DEC LIST) ###");
+        System.out.println("DEBUG DecList: head is " + (head == null ? "null" : head.getClass().getName()));
+        if (head != null) {
+            System.out.println("DEBUG DecList: About to call head.SemantMe()");
+            head.SemantMe();   // Perform semantic checks for the head declaration
+            System.out.println("DEBUG DecList: Returned from head.SemantMe()");
+        }
+
+        if (tail != null) {
+            tail.SemantMe();   // Perform semantic checks for the rest of the list
+        }
+
+        return null;  // dec lists have no type
+    }
 }

@@ -171,10 +171,10 @@ decList	::=			dec:d	decList:l			{: RESULT = new AstDecList(d,l);    :}
 					|	dec:d					{: RESULT = new AstDecList(d,null); :}
 					;
 					
-dec ::=      				varDec
-					| 		funcDec
-					|		classDec
-					|		arrayTypedef
+dec ::=      				varDec:v				{: RESULT = v; :}
+					| 		funcDec:f				{: RESULT = f; :}
+					|		classDec:c				{: RESULT = c; :}
+					|		arrayTypedef:a			{: RESULT = a; :}
 					; 
 
 type ::= 					TYPE_INT		{: RESULT = new AstType("int"); 		:}

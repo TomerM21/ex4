@@ -50,6 +50,7 @@ public class AstProgram extends AstNode {
 
     @Override
     public Type SemantMe() {
+        System.out.println("### SEMANT STARTED (PROGRAM) ###");
         return this.decList.SemantMe();
     }
 }

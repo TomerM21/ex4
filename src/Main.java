@@ -3,7 +3,8 @@ import java.io.*;
 import java.io.PrintWriter;
 import java_cup.runtime.Symbol;
 import ast.*;
-import ast.Dec.AstDecList;
+import ast.Helpers.HelperFunctions;
+//import ast.Dec.AstDecList;
 
 public class Main
 {
@@ -12,7 +13,7 @@ public class Main
 		Lexer l;
 		Parser p;
 		Symbol s;
-		AstDecList ast;
+		AstProgram ast;
 		FileReader fileReader;
 		PrintWriter fileWriter;
 		String inputFileName = argv[0];
@@ -30,6 +31,11 @@ public class Main
 			/********************************/
 			fileWriter = new PrintWriter(outputFileName);
 			
+			/****************************************/
+			/* [2.5] Set file writer in HelperFunctions */
+			/****************************************/
+			HelperFunctions.setFileWriter(fileWriter);
+			
 			/******************************/
 			/* [3] Initialize a new lexer */
 			/******************************/
@@ -38,13 +44,13 @@ public class Main
 			/*******************************/
 			/* [4] Initialize a new parser */
 			/*******************************/
-			p = new Parser(l);
+			p = new Parser(l, fileWriter);
 
 			/***********************************/
 			/* [5] 3 ... 2 ... 1 ... Parse !!! */
 			/***********************************/
-			ast = (AstDecList) p.parse().value;
-			
+			//ast = (AstDecList) p.parse().value;
+			ast = (AstProgram) p.parse().value;
 			/*************************/
 			/* [6] Print the AST ... */
 			/*************************/
@@ -55,13 +61,18 @@ public class Main
 			/**************************/
 			ast.SemantMe();
 			
+			/****************************************/
+			/* [8] Write OK if no errors occurred  */
+			/****************************************/
+			fileWriter.write("OK\n");
+			
 			/*************************/
-			/* [8] Close output file */
+			/* [9] Close output file */
 			/*************************/
 			fileWriter.close();
 
 			/*************************************/
-			/* [9] Finalize AST GRAPHIZ DOT file */
+			/* [10] Finalize AST GRAPHIZ DOT file */
 			/*************************************/
 			AstGraphviz.getInstance().finalizeFile();
     	}

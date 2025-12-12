@@ -4,7 +4,7 @@ import ast.AstGraphviz;
 import ast.AstNode;
 import ast.AstNodeSerialNumber;
 import types.Type;
-import ast.Helplers.AstList;
+import ast.Helpers.AstList;
 
 public class AstStmtList extends AstList
 {
@@ -66,11 +66,19 @@ public class AstStmtList extends AstList
 		if (head != null) AstGraphviz.getInstance().logEdge(serialNumber,head.serialNumber);
 		if (tail != null) AstGraphviz.getInstance().logEdge(serialNumber,tail.serialNumber);
 	}
+	// @Override
+	// public Type SemantMe() {
+	// 	if (head != null) head.SemantMe();
+	// 	if (tail != null) tail.SemantMe();
+	// 	return null;
+	// }
 	@Override
-	public Type SemantMe() {
-		if (head != null) head.SemantMe();
-		if (tail != null) tail.SemantMe();
-		return null;
-	}
-	
+    public AstNode getHead() {
+        return head;
+    }
+
+    @Override
+    public AstList getTail() {
+        return tail;        
+    }
 }

@@ -5,7 +5,7 @@ import ast.AstNode;
 import ast.AstNodeSerialNumber;
 import types.TypeList;
 import types.Type;
-import ast.Helplers.AstList;
+import ast.Helpers.AstList;
 
 
 public class AstExpList extends AstList
@@ -62,25 +62,35 @@ public class AstExpList extends AstList
         if (head != null) AstGraphviz.getInstance().logEdge(serialNumber,head.serialNumber);
         if (tail != null) AstGraphviz.getInstance().logEdge(serialNumber,tail.serialNumber);
     } 
+    // @Override
+    // public Type SemantMe()
+    // {
+    //     Type headType = null;
+    //     TypeList tailType = null;
+
+    //     // 1. Get the type of the current expression
+    //     if (head != null) {
+    //         headType = head.SemantMe();
+    //     }
+
+    //     // 2. Recursively get the list of the rest
+    //     if (tail != null) {
+    //         // We know the tail returns a TypeList, so we cast it
+    //         tailType = (TypeList) tail.SemantMe();
+    //     }
+
+    //     // 3. Return the combined list
+    //     return new TypeList(headType, tailType);
+    // }  
+
     @Override
-    public Type SemantMe()
-    {
-        Type headType = null;
-        TypeList tailType = null;
+    public AstNode getHead() {
+        return head;
+    }
 
-        // 1. Get the type of the current expression
-        if (head != null) {
-            headType = head.SemantMe();
-        }
-
-        // 2. Recursively get the list of the rest
-        if (tail != null) {
-            // We know the tail returns a TypeList, so we cast it
-            tailType = (TypeList) tail.SemantMe();
-        }
-
-        // 3. Return the combined list
-        return new TypeList(headType, tailType);
-    }  
+    @Override
+    public AstList getTail() {
+        return tail;        
+    }
     
 }
