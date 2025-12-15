@@ -201,8 +201,8 @@ stmtList	::=		stmt:s	stmtList:l		{: RESULT = new AstStmtList(s,l);    :}
 					| stmt:s				{: RESULT = new AstStmtList(s,null); :}
 					;
 
-classDec ::=                CLASS ID:name LBRACE cFieldList:cfl RBRACE                    {:RESULT = new AstClassDec(name,null,cfl);:}
-                    |       CLASS ID:name EXTENDS ID:name2 LBRACE cFieldList:cfl RBRACE   {:RESULT = new AstClassDec(name,name2,cfl);:}
+classDec ::=                CLASS:c ID:name LBRACE cFieldList:cfl RBRACE                    {:RESULT = new AstClassDec(name,null,cfl,cleft+1);:}
+                    |       CLASS:c ID:name EXTENDS ID:name2 LBRACE cFieldList:cfl RBRACE   {:RESULT = new AstClassDec(name,name2,cfl,cleft+1);:}
                     ;
 
 cFieldList ::= 		        cField:cf cFieldList:cfl		{: RESULT = new AstCFieldList(cf,cfl); :}
@@ -225,7 +225,7 @@ exp 		::=             var:v			                                 {: RESULT = new A
                     |       exp:e1 LT exp:e2                                 {: RESULT = new AstExpBinop(e1 ,e2, 4);:}
                     |       exp:e1 GT exp:e2                                 {: RESULT = new AstExpBinop(e1 ,e2, 5);:}
                     |       exp:e1 EQ exp:e2                                 {: RESULT = new AstExpBinop(e1 ,e2, 6);:}
-					|       callExp 
+					|       callExp:ce                                       {: RESULT = ce; :}
                     |       INT:i							                 {: RESULT = new AstExpInt(i);:}
                     |       MINUS INT:i						                 {: RESULT = new AstExpInt(-i);:}
                     |       NIL                                              {: RESULT = new AstExpNil();:}
@@ -251,7 +251,7 @@ var			::=		ID:name								{: RESULT = new AstVarSimple(name);       :}
 					| var:v LBRACK exp:e RBRACK			{: RESULT = new AstVarSubscript(v,e);     :}
 					;
 					
-stmt		::=		        varDec
+stmt		::=		        varDec:vd                                               {: RESULT = vd; :}
                     |       var:v ASSIGN exp:e SEMICOLON								{: RESULT = new AstStmtAssign(v,e); :}
                     |       var:v ASSIGN newExp:e SEMICOLON                             {: RESULT = new AstStmtAssign(v,e); :}
                     |       RETURN SEMICOLON                                            {:RESULT = new AstStmtReturn(null); :}

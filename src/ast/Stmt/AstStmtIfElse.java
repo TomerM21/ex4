@@ -76,6 +76,7 @@ public class AstStmtIfElse extends AstStmt
         Type condType = cond.SemantMe();
         if (!condType.isInt()) {
             System.out.println(">> ERROR: If condition must be int");
+            this.lineNumber = cond.lineNumber;
             error();
         }
         

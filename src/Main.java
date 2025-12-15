@@ -64,7 +64,7 @@ public class Main
 			/****************************************/
 			/* [8] Write OK if no errors occurred  */
 			/****************************************/
-			fileWriter.write("OK\n");
+			fileWriter.write("OK");
 			
 			/*************************/
 			/* [9] Close output file */

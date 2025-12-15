@@ -63,6 +63,7 @@ public class SymbolTable
 		return null;
 	}
 	public Type currentFunctionReturnType = null;
+	public TypeClass currentClass = null;  // Track the current class context for field lookups
 
 	/***************************************************************************/
 	/* begine scope = Enter the <SCOPE-BOUNDARY> element to the data structure */
@@ -211,6 +212,18 @@ public class SymbolTable
 					"PrintInt",
 					new TypeList(
 						TypeInt.getInstance(),
+						null)));
+			
+			/*****************************************/
+			/* [4] Enter library function PrintString */
+			/*****************************************/
+			instance.enter(
+				"PrintString",
+				new TypeFunction(
+					TypeVoid.getInstance(),
+					"PrintString",
+					new TypeList(
+						TypeString.getInstance(),
 						null)));
 			
 		}

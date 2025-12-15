@@ -51,12 +51,25 @@ public class AstVarSimple extends AstVar
 	}
 	@Override
     public Type SemantMe() {
-        // 1. Look for the name in the Symbol Table
-        Type t = symboltable.SymbolTable.getInstance().find(name);
+        symboltable.SymbolTable tbl = symboltable.SymbolTable.getInstance();
         
-        // 2. If not found, it's an error
+        // 1. Check if we're inside a class and the name is a field
+        if (tbl.currentClass != null) {
+            Type fieldType = tbl.currentClass.lookupField(name);
+            if (fieldType != null) {
+                System.out.println("DEBUG VarSimple: Looking up variable '" + name + "', found in class field: " + fieldType.name);
+                return fieldType;
+            }
+        }
+        
+        // 2. Look for the name in the Symbol Table (local and global scopes)
+        Type t = tbl.find(name);
+        
+        System.out.println("DEBUG VarSimple: Looking up variable '" + name + "', found: " + (t != null ? t.name : "NULL"));
+        
+        // 3. If not found, it's an error
         if (t == null) {
-            System.out.format(">> ERROR: Variable %s not found\n", name);
+            System.out.format(">> ERROR: Variable %s not found at line %d\n", name, this.lineNumber);
             error();
         }
         

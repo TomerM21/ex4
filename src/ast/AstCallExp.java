@@ -80,12 +80,21 @@ public class AstCallExp extends AstExp {
         // 1. Find the Function
         if (receiver == null) {
             // Regular function call: foo()
-            Type t = symboltable.SymbolTable.getInstance().find(methodName);
-            if (t == null || !(t instanceof types.TypeFunction)) {
-                System.out.format(">> ERROR: Function %s not found\n", methodName);
-                error();
+            // First check if we're inside a class and it's a method of the current class
+            symboltable.SymbolTable tbl = symboltable.SymbolTable.getInstance();
+            if (tbl.currentClass != null) {
+                funcType = tbl.currentClass.lookupMethod(methodName);
             }
-            funcType = (types.TypeFunction) t;
+            
+            // If not found in class, look in symbol table for global functions
+            if (funcType == null) {
+                Type t = tbl.find(methodName);
+                if (t == null || !(t instanceof types.TypeFunction)) {
+                    System.out.format(">> ERROR: Function %s not found\n", methodName);
+                    error();
+                }
+                funcType = (types.TypeFunction) t;
+            }
         } else {
             // Method call: obj.foo()
             Type recvType = receiver.SemantMe();

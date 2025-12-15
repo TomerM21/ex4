@@ -81,7 +81,17 @@ public class AstVarSubscript extends AstVar
             error();
         }
         
-        // 5. Return the type of elements inside the array
+        // 5. Check if subscript is a negative constant
+        if (subscript instanceof ast.Exp.AstExpInt) {
+            ast.Exp.AstExpInt intExp = (ast.Exp.AstExpInt) subscript;
+            if (intExp.value < 0) {
+                System.out.println(">> ERROR: Array subscript cannot be negative");
+                this.lineNumber = subscript.lineNumber;
+                error();
+            }
+        }
+        
+        // 6. Return the type of elements inside the array
         return ((types.TypeArray) t).elementType;
     }
 }

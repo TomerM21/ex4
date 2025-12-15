@@ -68,10 +68,20 @@ public class TypeClass extends Type
 
 			if (t instanceof TypeClassVarDec) {
 				TypeClassVarDec varDec = (TypeClassVarDec) t;
+				// Check if a method with this name already exists
+				if (methods.containsKey(varDec.name)) {
+					System.out.format(">> ERROR: Field '%s' has same name as a method in the same class\n", varDec.name);
+					ast.Helpers.HelperFunctions.printErrorAndExit(varDec.lineNumber);
+				}
 				fields.put(varDec.name, varDec.t);
 			}
 			else if (t instanceof TypeFunction) {
 				TypeFunction func = (TypeFunction) t;
+				// Check if a field with this name already exists
+				if (fields.containsKey(func.name)) {
+					System.out.format(">> ERROR: Method '%s' has same name as a field in the same class\n", func.name);
+					ast.Helpers.HelperFunctions.printErrorAndExit(func.lineNumber);
+				}
 				methods.put(func.name, func);
 			}
 			it = it.tail;

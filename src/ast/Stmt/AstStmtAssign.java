@@ -68,11 +68,19 @@ public class AstStmtAssign extends AstStmt
 	}
 	@Override
     public Type SemantMe() {
+        System.out.println("DEBUG StmtAssign: Processing assignment at line " + this.lineNumber);
+        System.out.println("DEBUG StmtAssign: var.lineNumber = " + var.lineNumber);
+        System.out.println("DEBUG StmtAssign: exp.lineNumber = " + exp.lineNumber);
         Type varType = var.SemantMe();
+        System.out.println("DEBUG StmtAssign: varType = " + (varType != null ? varType.name : "null"));
         Type expType = exp.SemantMe();
+        System.out.println("DEBUG StmtAssign: expType = " + (expType != null ? expType.name : "null"));
 
         if (!HelperFunctions.canAssign(varType, expType)) {
-             System.out.format(">> ERROR: Cannot assign type %s to %s\n", expType.name, varType.name);
+             System.out.format(">> ERROR: Cannot assign type %s to %s\n", 
+                 expType != null ? expType.name : "null", 
+                 varType != null ? varType.name : "null");
+             this.lineNumber = var.lineNumber;
              error();
         }
         return null;

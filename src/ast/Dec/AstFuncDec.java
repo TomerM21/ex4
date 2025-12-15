@@ -68,17 +68,32 @@ public class AstFuncDec extends AstDec {
 
         // 2. Check for Shadowing (Function name must be unique)
         if (HelperFunctions.existsInCurrentScope(name)) {
-            error();
+            HelperFunctions.printErrorAndExit(returnType.lineNumber);
         }
 
-        // 3. Resolve Parameter Types (Build the signature list)
+        // 3. Validate Parameter Types and Build the signature list
         TypeList params = null;
         if (typeList != null) {
+            // First, validate all parameter types before building TypeList
+            AstTypeList it = typeList;
+            while (it != null) {
+                Type paramType = it.type.SemantMe();
+                
+                // Validate parameter type (cannot be void)
+                if (paramType instanceof TypeVoid) {
+                    HelperFunctions.printErrorAndExit(it.type.lineNumber);
+                }
+                
+                it = it.tail;
+            }
+            
+            // Now build the TypeList (all params are valid)
             params = (TypeList) typeList.SemantMe();
         }
 
         // 4. Create the Function Type Wrapper
         TypeFunction funcType = new TypeFunction(retType, name, params);
+        funcType.lineNumber = returnType.lineNumber;  // Use return type's line number (same as function declaration)
 
         // 5. Enter Function into Symbol Table (Before body, allowing recursion)
         tbl.enter(name, funcType);
@@ -93,11 +108,7 @@ public class AstFuncDec extends AstDec {
             
             // Check for duplicate parameter names
             if (HelperFunctions.existsInCurrentScope(it.name)) {
-                error();
-            }
-            
-            // Validate parameter type (cannot be void)
-            if (paramType instanceof TypeVoid) {
+                this.lineNumber = it.type.lineNumber;
                 error();
             }
 

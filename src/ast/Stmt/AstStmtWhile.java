@@ -66,6 +66,7 @@ public class AstStmtWhile extends AstStmt
         Type condType = cond.SemantMe();
         if (!condType.isInt()) {
             System.out.println(">> ERROR: While condition must be int");
+            this.lineNumber = cond.lineNumber;
             error();
         }
         

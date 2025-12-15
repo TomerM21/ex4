@@ -112,7 +112,9 @@ public class AstVarDec extends AstDec {
 
         // 7. RETURN THE WRAPPER
         // This allows AstClassDec to know the name of this variable later.
-        return new TypeClassVarDec(varType, name); 
+        TypeClassVarDec varDecType = new TypeClassVarDec(varType, name);
+        varDecType.lineNumber = this.lineNumber;  // Store the line number for error reporting
+        return varDecType; 
     }
 }
 /*

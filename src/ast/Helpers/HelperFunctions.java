@@ -14,7 +14,7 @@ public class HelperFunctions {
     public static void printErrorAndExit(int lineNumber) {
         System.out.println("ERROR(" + lineNumber + ")");
         if (file_writer != null) {
-            file_writer.write("ERROR(" + lineNumber + ")\n");
+            file_writer.write("ERROR(" + lineNumber + ")");
             file_writer.close();
         }
         System.exit(0);
@@ -32,9 +32,24 @@ public class HelperFunctions {
         // same type
         if (target == source) return true;
 
-        // nil allowed only for class types
+        // nil allowed only for class types and arrays
         if (source instanceof TypeNil) {
-            return target instanceof TypeClass;
+            return (target instanceof TypeClass) || (target instanceof TypeArray);
+        }
+
+        // array type check - both must be arrays with compatible element types
+        if (target instanceof TypeArray && source instanceof TypeArray) {
+            TypeArray targetArray = (TypeArray) target;
+            TypeArray sourceArray = (TypeArray) source;
+            
+            // If source is anonymous (no name, from "new int[]"), allow if element types match
+            if (sourceArray.name == null || sourceArray.name.isEmpty()) {
+                return canAssign(targetArray.elementType, sourceArray.elementType);
+            }
+            
+            // If both have names (named array types), they must be exactly the same type
+            // gradesArray != IDsArray even if both are int[]
+            return targetArray == sourceArray;
         }
 
         // inheritance check for class types

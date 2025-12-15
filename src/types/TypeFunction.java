@@ -12,6 +12,11 @@ public class TypeFunction extends Type
 	/*************************/
 	public TypeList params;
 	
+	/****************************/
+	/* line number of declaration */
+	/****************************/
+	public int lineNumber;
+	
 	/****************/
 	/* CTROR(S) ... */
 	/****************/
@@ -20,6 +25,7 @@ public class TypeFunction extends Type
 		this.name = name;
 		this.returnType = returnType;
 		this.params = params;
+		this.lineNumber = 0;
 	}
 
 	@Override

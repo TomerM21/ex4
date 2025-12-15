@@ -18,7 +18,12 @@ JFlex_GENERATED_FILE      = ${SRC_DIR}/Lexer.java
 CUP_GENERATED_FILES       = ${SRC_DIR}/Parser.java ${SRC_DIR}/TokenNames.java
 JFlex_CUP_GENERATED_FILES = ${JFlex_GENERATED_FILE} ${CUP_GENERATED_FILES}
 #SRC_FILES                 = ${SRC_DIR}/*.java ${SRC_DIR}/*/*.java
-SRC_FILES = $(shell find ${SRC_DIR} -name "*.java")
+SRC_FILES = \
+  $(JFlex_CUP_GENERATED_FILES) \
+  $(wildcard $(SRC_DIR)/*.java) \
+  $(wildcard $(SRC_DIR)/*/*.java) \
+  $(wildcard $(SRC_DIR)/*/*/*.java) \
+  $(wildcard $(SRC_DIR)/*/*/*/*.java)
 EXTERNAL_JAR_FILES        = ${EXTERNAL_JARS_DIR}/java-cup-11b-runtime.jar
 MANIFEST_FILE             = ${MANIFEST_DIR}/MANIFEST.MF
 

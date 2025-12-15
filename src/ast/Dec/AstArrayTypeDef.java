@@ -56,6 +56,13 @@ public class AstArrayTypeDef extends AstDec {
             error();
         }
 
+        // array element type cannot be void
+        if (inner.isVoid()) {
+            System.out.println(">> ERROR: Array element type cannot be void");
+            this.lineNumber = type.lineNumber;
+            error();
+        }
+
         // name must be unique in current scope
         if (HelperFunctions.existsInCurrentScope(name)) {
             error();

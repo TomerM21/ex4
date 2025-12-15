@@ -79,6 +79,8 @@ public class AstExpBinop extends AstExp
         Type t1 = left.SemantMe();
         Type t2 = right.SemantMe();
 
+        System.out.println("DEBUG ExpBinop: op=" + op + ", t1=" + (t1!=null?t1.name:"null") + ", t2=" + (t2!=null?t2.name:"null") + ", line=" + this.lineNumber);
+
         // 1. Equality Check (EQ: 6)
         if (op == 6) {
             // Check if types are compatible (Same type, or Class inheritance, or Nil)
@@ -94,13 +96,13 @@ public class AstExpBinop extends AstExp
         if (op == 0) {
             if (t1.isInt() && t2.isInt()) return types.TypeInt.getInstance();
             if (t1.isString() && t2.isString()) return types.TypeString.getInstance();
-            System.out.println(">> ERROR: Plus must be between two Ints or two Strings");
+            System.out.println(">> ERROR: Plus must be between two Ints or two Strings at line " + this.lineNumber);
             error();
         }
 
         // 3. Other Math/Relational Ops (-, *, /, <, >) - Ints only
         if (!t1.isInt() || !t2.isInt()) {
-            System.out.println(">> ERROR: Arithmetic operation on non-int types");
+            System.out.println(">> ERROR: Arithmetic operation on non-int types at line " + this.lineNumber);
             error();
         }
         
