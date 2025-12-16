@@ -1,6 +1,4 @@
-   
 import java.io.*;
-import java.io.PrintWriter;
 import java_cup.runtime.Symbol;
 import ast.*;
 import ast.Helpers.HelperFunctions;
@@ -12,10 +10,9 @@ public class Main
 	{
 		Lexer l;
 		Parser p;
-		Symbol s;
 		AstProgram ast;
-		FileReader fileReader;
-		PrintWriter fileWriter;
+		FileReader fileReader = null;
+		PrintWriter fileWriter = null;
 		String inputFileName = argv[0];
 		String outputFileName = argv[1];
 		
@@ -51,10 +48,11 @@ public class Main
 			/***********************************/
 			//ast = (AstDecList) p.parse().value;
 			ast = (AstProgram) p.parse().value;
+			
 			/*************************/
 			/* [6] Print the AST ... */
 			/*************************/
-			ast.printMe();
+			// ast.printMe();
 
 			/**************************/
 			/* [7] Semant the AST ... */
@@ -66,22 +64,32 @@ public class Main
 			/****************************************/
 			fileWriter.write("OK");
 			
-			/*************************/
-			/* [9] Close output file */
-			/*************************/
-			fileWriter.close();
-
 			/*************************************/
-			/* [10] Finalize AST GRAPHIZ DOT file */
+			/* [9] Finalize AST GRAPHIZ DOT file */
 			/*************************************/
-			AstGraphviz.getInstance().finalizeFile();
+			// AstGraphviz.getInstance().finalizeFile();
     	}
 			     
 		catch (Exception e)
 		{
 			e.printStackTrace();
+			fileWriter.write("ERROR");
 		}
+
+		finally 
+		{
+            // ALWAYS close the file to flush the buffer
+            if (fileWriter != null) {
+                fileWriter.close();
+            }
+            try {
+                if (fileReader != null) {
+                    fileReader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 	}
 }
-
 
