@@ -44,4 +44,11 @@ public class AstCField extends AstNode {
     public Type SemantMe() {
         return dec.SemantMe();   
     }
+
+    public temp.Temp irMe()
+    {
+        // Delegate to the declaration
+        if (dec != null) return dec.irMe();
+        return null;
+    }
 }

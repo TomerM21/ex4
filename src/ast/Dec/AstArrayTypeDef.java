@@ -76,4 +76,11 @@ public class AstArrayTypeDef extends AstDec {
 
         return null;
     }
+
+    public temp.Temp irMe()
+    {
+        // Array type definitions don't generate IR code
+        // They're just type definitions used by the semantic analyzer
+        return null;
+    }
 }

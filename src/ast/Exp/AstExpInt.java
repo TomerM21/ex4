@@ -3,6 +3,8 @@ package ast.Exp;
 import ast.AstGraphviz;
 import ast.AstNodeSerialNumber;
 import types.*;
+import temp.*;
+import ir.*;
 
 public class AstExpInt extends AstExp
 {
@@ -49,5 +51,12 @@ public class AstExpInt extends AstExp
 	@Override
 	public Type SemantMe() {
     	return TypeInt.getInstance();
-}
+	}
+
+	public Temp irMe()
+	{
+		Temp t = TempFactory.getInstance().getFreshTemp();
+		Ir.getInstance().AddIrCommand(new IRcommandConstInt(t, value));
+		return t;
+	}
 }

@@ -3,6 +3,8 @@ package ast.Var;
 import ast.AstGraphviz;
 import ast.AstNodeSerialNumber;
 import types.Type;
+import temp.*;
+import ir.*;
 
 public class AstVarSimple extends AstVar
 {
@@ -73,6 +75,13 @@ public class AstVarSimple extends AstVar
             error();
         }
         
+        return t;
+    }
+
+    public Temp irMe()
+    {
+        Temp t = TempFactory.getInstance().getFreshTemp();
+        Ir.getInstance().AddIrCommand(new IrCommandLoad(t, name));
         return t;
     }
 }

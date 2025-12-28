@@ -12,17 +12,19 @@ package ir;
 /*******************/
 import temp.*;
 
-public class IrCommandPrintInt extends IrCommand
+public class IrCommandConstString extends IrCommand
 {
-	Temp t;
+	public Temp t;
+	public String value;
 	
-	public IrCommandPrintInt(Temp t)
+	public IrCommandConstString(Temp t, String value)
 	{
 		this.t = t;
+		this.value = value;
 	}
 	
 	@Override
 	public String toString() {
-		return "PrintInt(Temp_" + t.getSerialNumber() + ")";
+		return "Temp_" + t.getSerialNumber() + " := \"" + value + "\"";
 	}
 }

@@ -81,4 +81,12 @@ public class AstStmtList extends AstList
     public AstList getTail() {
         return tail;        
     }
+
+    public temp.Temp irMe()
+    {
+        // Execute statements in sequence
+        if (head != null) head.irMe();
+        if (tail != null) tail.irMe();
+        return null;
+    }
 }

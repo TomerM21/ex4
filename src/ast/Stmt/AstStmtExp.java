@@ -62,5 +62,12 @@ public class AstStmtExp extends AstStmt
     public Type SemantMe() {
         callExp.SemantMe();
         return null;
-}
+    }
+
+    public temp.Temp irMe()
+    {
+        // Execute the call expression
+        if (callExp != null) callExp.irMe();
+        return null;
+    }
 }

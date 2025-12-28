@@ -94,4 +94,14 @@ public class AstVarSubscript extends AstVar
         // 6. Return the type of elements inside the array
         return ((types.TypeArray) t).elementType;
     }
+
+    public temp.Temp irMe()
+    {
+        // Array subscript: arr[index] - load element
+        temp.Temp arrTemp = var.irMe();
+        temp.Temp indexTemp = subscript.irMe();
+        temp.Temp resultTemp = temp.TempFactory.getInstance().getFreshTemp();
+        ir.Ir.getInstance().AddIrCommand(new ir.IrCommandArrayLoad(resultTemp, arrTemp, indexTemp));
+        return resultTemp;
+    }
 }

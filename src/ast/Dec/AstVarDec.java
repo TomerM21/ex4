@@ -10,6 +10,8 @@ import symboltable.SymbolTable;
 import types.Type;
 import types.TypeClassVarDec;
 import types.TypeVoid;
+import temp.*;
+import ir.*;
 
 public class AstVarDec extends AstDec {
     private AstType typeNode; // int, string, void, A, B, ... 
@@ -115,6 +117,25 @@ public class AstVarDec extends AstDec {
         TypeClassVarDec varDecType = new TypeClassVarDec(varType, name);
         varDecType.lineNumber = this.lineNumber;  // Store the line number for error reporting
         return varDecType; 
+    }
+
+    public Temp irMe()
+    {
+        // Allocate space for the variable
+        Ir.getInstance().AddIrCommand(new IrCommandAllocate(name));
+
+        // If there's an initialization expression, evaluate and store it
+        if (exp != null) {
+            Temp expTemp = exp.irMe();
+            Ir.getInstance().AddIrCommand(new IrCommandStore(name, expTemp));
+        }
+        // If there's a new expression, evaluate and store it
+        else if (newExp != null) {
+            Temp newTemp = newExp.irMe();
+            Ir.getInstance().AddIrCommand(new IrCommandStore(name, newTemp));
+        }
+
+        return null;
     }
 }
 /*

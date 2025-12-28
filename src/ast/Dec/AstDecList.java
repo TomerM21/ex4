@@ -91,4 +91,11 @@ public class AstDecList extends AstList
 
         return null;  // dec lists have no type
     }
+
+    public temp.Temp irMe() {
+        // Generate IR for all declarations in order
+        if (head != null) head.irMe();
+        if (tail != null) tail.irMe();
+        return null;
+    }
 }

@@ -5,7 +5,12 @@ import ast.AstNodeSerialNumber;
 import ast.Exp.AstExp;
 import ast.Helpers.HelperFunctions;
 import ast.Var.AstVar;
+import ast.Var.AstVarSimple;
+import ast.Var.AstVarField;
+import ast.Var.AstVarSubscript;
 import types.Type;
+import temp.*;
+import ir.*;
 
 public class AstStmtAssign extends AstStmt
 {
@@ -83,6 +88,31 @@ public class AstStmtAssign extends AstStmt
              this.lineNumber = var.lineNumber;
              error();
         }
+        return null;
+    }
+
+    public Temp irMe()
+    {
+        Temp src = exp.irMe();
+        
+        // Handle different variable types
+        if (var instanceof AstVarSimple) {
+            // Simple variable: x := exp
+            AstVarSimple simpleVar = (AstVarSimple) var;
+            Ir.getInstance().AddIrCommand(new IrCommandStore(simpleVar.name, src));
+        } else if (var instanceof AstVarField) {
+            // Field access: obj.field := exp
+            AstVarField fieldVar = (AstVarField) var;
+            Temp objTemp = fieldVar.var.irMe();
+            Ir.getInstance().AddIrCommand(new IrCommandFieldStore(objTemp, fieldVar.fieldName, src));
+        } else if (var instanceof AstVarSubscript) {
+            // Array subscript: arr[index] := exp
+            AstVarSubscript subsVar = (AstVarSubscript) var;
+            Temp arrTemp = subsVar.var.irMe();
+            Temp indexTemp = subsVar.subscript.irMe();
+            Ir.getInstance().AddIrCommand(new IrCommandArrayStore(arrTemp, indexTemp, src));
+        }
+        
         return null;
     }
 }

@@ -46,4 +46,11 @@ public class AstExpSingle extends AstExp {
     public Type SemantMe() {
         return exp.SemantMe();
     }
+
+    public temp.Temp irMe()
+    {
+        // Just a wrapper - delegate to the wrapped expression
+        if (exp != null) return exp.irMe();
+        return null;
+    }
 }

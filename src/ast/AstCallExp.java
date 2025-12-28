@@ -141,4 +141,25 @@ public class AstCallExp extends AstExp {
 
         return funcType.returnType;
     }
+
+    public temp.Temp irMe()
+    {
+        // Build argument list
+        ir.TempList argList = null;
+        if (args != null) {
+            argList = args.irMe();
+        }
+        
+        // Special case: PrintInt is a built-in that we handle specially
+        if ("PrintInt".equals(methodName) && argList != null && argList.head != null) {
+            ir.Ir.getInstance().AddIrCommand(new ir.IrCommandPrintInt(argList.head));
+            return null; // PrintInt doesn't return a value
+        }
+        
+        // For regular function calls, generate call instruction
+        temp.Temp result = temp.TempFactory.getInstance().getFreshTemp();
+        ir.Ir.getInstance().AddIrCommand(new ir.IrCommandCall(result, methodName, argList));
+        
+        return result;
+    }
 }

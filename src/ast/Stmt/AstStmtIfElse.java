@@ -5,6 +5,8 @@ import ast.AstNodeSerialNumber;
 import ast.Exp.AstExp;
 import symboltable.SymbolTable;
 import types.Type;
+import temp.*;
+import ir.*;
 
 public class AstStmtIfElse extends AstStmt
 {
@@ -90,6 +92,52 @@ public class AstStmtIfElse extends AstStmt
         if (elseBody != null) elseBody.SemantMe();
         SymbolTable.getInstance().endScope();
         
+        return null;
+    }
+
+    public Temp irMe()
+    {
+        /*******************************/
+        /* [1] Allocate fresh labels */
+        /*******************************/
+        String labelElse = IrCommand.getFreshLabel("else");
+        String labelEnd = IrCommand.getFreshLabel("end_if");
+
+        /****************************/
+        /* [2] cond.irMe() */
+        /****************************/
+        Temp condTemp = cond.irMe();
+
+        /*******************************************/
+        /* [3] Jump to else if condition is false */
+        /*******************************************/
+        Ir.getInstance().AddIrCommand(new IrCommandJumpIfEqToZero(condTemp, labelElse));
+
+        /***********************/
+        /* [4] if body.irMe() */
+        /***********************/
+        if (body != null) body.irMe();
+
+        /**************************************/
+        /* [5] Jump to end (skip else block) */
+        /**************************************/
+        Ir.getInstance().AddIrCommand(new IrCommandJumpLabel(labelEnd));
+
+        /**********************/
+        /* [6] Else label */
+        /**********************/
+        Ir.getInstance().AddIrCommand(new IrCommandLabel(labelElse));
+
+        /*************************/
+        /* [7] else body.irMe() */
+        /*************************/
+        if (elseBody != null) elseBody.irMe();
+
+        /**********************/
+        /* [8] End label */
+        /**********************/
+        Ir.getInstance().AddIrCommand(new IrCommandLabel(labelEnd));
+
         return null;
     }
 }

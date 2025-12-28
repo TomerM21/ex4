@@ -64,4 +64,45 @@ public class Ir
 		}
 		return instance;
 	}
+	
+	/********************************/
+	/* GET LIST OF ALL IR COMMANDS  */
+	/********************************/
+	public java.util.ArrayList<IrCommand> getCommandList()
+	{
+		java.util.ArrayList<IrCommand> result = new java.util.ArrayList<>();
+		
+		if (head != null) {
+			result.add(head);
+		}
+		
+		IrCommandList current = tail;
+		while (current != null) {
+			if (current.head != null) {
+				result.add(current.head);
+			}
+			current = current.tail;
+		}
+		
+		return result;
+	}
+	
+	/********************************/
+	/* PRINT ALL IR COMMANDS        */
+	/********************************/
+	public void printIrToFile(String filename) throws java.io.IOException
+	{
+		java.io.PrintWriter writer = new java.io.PrintWriter(new java.io.FileWriter(filename));
+		
+		java.util.ArrayList<IrCommand> commands = getCommandList();
+		writer.println("========== IR COMMANDS ==========");
+		writer.println("Total commands: " + commands.size());
+		writer.println("=================================");
+		
+		for (IrCommand cmd : commands) {
+			writer.println(cmd.toString());
+		}
+		
+		writer.close();
+	}
 }

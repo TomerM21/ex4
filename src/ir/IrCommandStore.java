@@ -22,4 +22,9 @@ public class IrCommandStore extends IrCommand
 		this.src      = src;
 		this.varName = varName;
 	}
+	
+	@Override
+	public String toString() {
+		return varName + " := Temp_" + src.getSerialNumber();
+	}
 }

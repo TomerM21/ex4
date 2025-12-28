@@ -52,4 +52,11 @@ public class AstExpNil extends AstExp {
     public Type SemantMe() {
         return TypeNil.getInstance();
     }
+
+    public temp.Temp irMe()
+    {
+        // Nil is not used in our dataflow analysis tests
+        // Return null as we don't generate IR for nil
+        return null;
+    }
 }

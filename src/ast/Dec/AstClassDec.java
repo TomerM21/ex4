@@ -191,4 +191,12 @@ public class AstClassDec extends AstDec {
             }
         }
     }
+
+    public temp.Temp irMe()
+    {
+        // Class declarations don't generate IR code
+        // They're just type definitions used by the semantic analyzer
+        // Member variables and methods will generate code when instantiated/called
+        return null;
+    }
 }

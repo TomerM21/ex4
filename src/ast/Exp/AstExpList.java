@@ -93,4 +93,16 @@ public class AstExpList extends AstList
         return tail;        
     }
     
+    public ir.TempList irMe()
+    {
+        temp.Temp headTemp = head.irMe();
+        ir.TempList tailList = null;
+        
+        if (tail != null) {
+            tailList = tail.irMe();
+        }
+        
+        return new ir.TempList(headTemp, tailList);
+    }
+    
 }

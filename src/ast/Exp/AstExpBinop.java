@@ -4,6 +4,9 @@ import ast.AstGraphviz;
 import ast.AstNodeSerialNumber;
 
 import types.Type;
+import temp.*;
+import ir.*;
+
 public class AstExpBinop extends AstExp
 {
 	int op;
@@ -117,5 +120,46 @@ public class AstExpBinop extends AstExp
         }
 
         return types.TypeInt.getInstance();
+    }
+
+    public Temp irMe()
+    {
+        Temp t1 = null;
+        Temp t2 = null;
+        Temp dst = TempFactory.getInstance().getFreshTemp();
+
+        if (left  != null) t1 = left.irMe();
+        if (right != null) t2 = right.irMe();
+
+        if (op == 0) // PLUS
+        {
+            Ir.getInstance().AddIrCommand(new IrCommandBinopAddIntegers(dst, t1, t2));
+        }
+        else if (op == 1) // MINUS
+        {
+            Ir.getInstance().AddIrCommand(new IrCommandBinopSubIntegers(dst, t1, t2));
+        }
+        else if (op == 2) // TIMES
+        {
+            Ir.getInstance().AddIrCommand(new IrCommandBinopMulIntegers(dst, t1, t2));
+        }
+        else if (op == 3) // DIVIDE
+        {
+            Ir.getInstance().AddIrCommand(new IrCommandBinopDivIntegers(dst, t1, t2));
+        }
+        else if (op == 4) // LT
+        {
+            Ir.getInstance().AddIrCommand(new IrCommandBinopLtIntegers(dst, t1, t2));
+        }
+        else if (op == 5) // GT
+        {
+            Ir.getInstance().AddIrCommand(new IrCommandBinopGtIntegers(dst, t1, t2));
+        }
+        else if (op == 6) // EQ
+        {
+            Ir.getInstance().AddIrCommand(new IrCommandBinopEqIntegers(dst, t1, t2));
+        }
+
+        return dst;
     }
 }

@@ -8,6 +8,8 @@ import ast.Helpers.HelperFunctions;
 import ast.Stmt.AstStmtList;
 import symboltable.SymbolTable;
 import types.*;
+import temp.*;
+import ir.*;
 
 public class AstFuncDec extends AstDec {
     private AstType returnType;
@@ -133,5 +135,13 @@ public class AstFuncDec extends AstDec {
 
         // 10. RETURN THE WRAPPER
         return funcType;
+    }
+
+    public Temp irMe() {
+        // Generate IR for function body
+        if (stmtList != null) {
+            stmtList.irMe();
+        }
+        return null;
     }
 }

@@ -57,5 +57,13 @@ public class AstCFieldList extends AstList {
         return tail;
     }
 
+    public temp.Temp irMe()
+    {
+        // Process all class fields
+        if (head != null) head.irMe();
+        if (tail != null) tail.irMe();
+        return null;
+    }
+
     // Semant me of astList
 }

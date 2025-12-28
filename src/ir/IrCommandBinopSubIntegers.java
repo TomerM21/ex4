@@ -12,13 +12,13 @@ package ir;
 /*******************/
 import temp.*;
 
-public class IrCommandBinopLtIntegers extends IrCommand
+public class IrCommandBinopSubIntegers extends IrCommand
 {
 	public Temp t1;
 	public Temp t2;
 	public Temp dst;
-
-	public IrCommandBinopLtIntegers(Temp dst, Temp t1, Temp t2)
+	
+	public IrCommandBinopSubIntegers(Temp dst, Temp t1, Temp t2)
 	{
 		this.dst = dst;
 		this.t1 = t1;
@@ -27,6 +27,6 @@ public class IrCommandBinopLtIntegers extends IrCommand
 	
 	@Override
 	public String toString() {
-		return "Temp_" + dst.getSerialNumber() + " := Temp_" + t1.getSerialNumber() + " < Temp_" + t2.getSerialNumber();
+		return "Temp_" + dst.getSerialNumber() + " := Temp_" + t1.getSerialNumber() + " - Temp_" + t2.getSerialNumber();
 	}
 }

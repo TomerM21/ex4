@@ -53,4 +53,12 @@ public class AstProgram extends AstNode {
         System.out.println("### SEMANT STARTED (PROGRAM) ###");
         return this.decList.SemantMe();
     }
+
+    public temp.Temp irMe() {
+        // Generate IR for all declarations
+        if (decList != null) {
+            decList.irMe();
+        }
+        return null;
+    }
 }

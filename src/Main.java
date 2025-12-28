@@ -59,13 +59,29 @@ public class Main
 			/**************************/
 			ast.SemantMe();
 			
+			/*********************************/
+			/* [8] Generate IR from AST ...  */
+			/*********************************/
+			ast.irMe();
+			
 			/****************************************/
-			/* [8] Write OK if no errors occurred  */
+			/* [9] Write IR to file for debugging   */
+			/****************************************/
+			String irOutputFile = outputFileName.replace("SemanticStatus.txt", "IR_Output.txt");
+			try {
+				ir.Ir.getInstance().printIrToFile(irOutputFile);
+				System.out.println("IR output written to: " + irOutputFile);
+			} catch (Exception irEx) {
+				System.err.println("Failed to write IR output: " + irEx.getMessage());
+			}
+			
+			/****************************************/
+			/* [10] Write OK if no errors occurred  */
 			/****************************************/
 			fileWriter.write("OK");
 			
 			/*************************************/
-			/* [9] Finalize AST GRAPHIZ DOT file */
+			/* [11] Finalize AST GRAPHIZ DOT file */
 			/*************************************/
 			// AstGraphviz.getInstance().finalizeFile();
     	}

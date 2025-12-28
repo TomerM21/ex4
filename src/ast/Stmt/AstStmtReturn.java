@@ -7,7 +7,8 @@ import ast.Helpers.HelperFunctions;
 import symboltable.SymbolTable;
 import types.TypeVoid;
 import types.Type;
-
+import temp.*;
+import ir.*;
 
 public class AstStmtReturn extends AstStmt
 {
@@ -85,6 +86,18 @@ public class AstStmtReturn extends AstStmt
             error();
         }
 
+        return null;
+    }
+
+    public Temp irMe()
+    {
+        if (exp != null) {
+            Temp retVal = exp.irMe();
+            Ir.getInstance().AddIrCommand(new IrCommandReturn(retVal));
+        } else {
+            // Void return
+            Ir.getInstance().AddIrCommand(new IrCommandReturn(null));
+        }
         return null;
     }
 }

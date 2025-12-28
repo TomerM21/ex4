@@ -21,4 +21,9 @@ public abstract class IrCommand
 	{
 		return String.format("Label_%d_%s", labelCounter++,msg);
 	}
+	
+	/***********************************/
+	/* Abstract method for IR printing */
+	/***********************************/
+	public abstract String toString();
 }

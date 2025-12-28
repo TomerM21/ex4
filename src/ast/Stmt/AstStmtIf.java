@@ -5,6 +5,8 @@ import ast.AstNodeSerialNumber;
 import ast.Exp.AstExp;
 import symboltable.SymbolTable;
 import types.Type;
+import temp.*;
+import ir.*;
 
 public class AstStmtIf extends AstStmt
 {
@@ -78,6 +80,36 @@ public class AstStmtIf extends AstStmt
         if (body != null) body.SemantMe();
         SymbolTable.getInstance().endScope();
         
+        return null;
+    }
+
+    public Temp irMe()
+    {
+        /*******************************/
+        /* [1] Allocate a fresh label */
+        /*******************************/
+        String labelEnd = IrCommand.getFreshLabel("end_if");
+
+        /****************************/
+        /* [2] cond.irMe() */
+        /****************************/
+        Temp condTemp = cond.irMe();
+
+        /*******************************************/
+        /* [3] Jump to end if condition is false */
+        /*******************************************/
+        Ir.getInstance().AddIrCommand(new IrCommandJumpIfEqToZero(condTemp, labelEnd));
+
+        /*******************/
+        /* [4] body.irMe() */
+        /*******************/
+        if (body != null) body.irMe();
+
+        /**********************/
+        /* [5] End label */
+        /**********************/
+        Ir.getInstance().AddIrCommand(new IrCommandLabel(labelEnd));
+
         return null;
     }
 }

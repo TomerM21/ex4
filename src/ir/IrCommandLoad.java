@@ -22,4 +22,9 @@ public class IrCommandLoad extends IrCommand
 		this.dst      = dst;
 		this.varName = varName;
 	}
+	
+	@Override
+	public String toString() {
+		return "Temp_" + dst.getSerialNumber() + " := " + varName;
+	}
 }

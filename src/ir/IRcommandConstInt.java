@@ -22,4 +22,9 @@ public class IRcommandConstInt extends IrCommand
 		this.t = t;
 		this.value = value;
 	}
+	
+	@Override
+	public String toString() {
+		return "Temp_" + t.getSerialNumber() + " := " + value;
+	}
 }

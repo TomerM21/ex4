@@ -81,4 +81,13 @@ public class AstVarField extends AstVar
         
         return fieldType;
     }
+
+    public temp.Temp irMe()
+    {
+        // Field access: obj.field - load field value
+        temp.Temp objTemp = var.irMe();
+        temp.Temp fieldTemp = temp.TempFactory.getInstance().getFreshTemp();
+        ir.Ir.getInstance().AddIrCommand(new ir.IrCommandFieldLoad(fieldTemp, objTemp, fieldName));
+        return fieldTemp;
+    }
 }

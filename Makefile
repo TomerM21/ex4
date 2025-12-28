@@ -120,6 +120,45 @@ all:
 	@echo "***********************************************************"
 	jar cfm SEMANT ${MANIFEST_FILE} -C ${BIN_DIR} .
 	
+test_ir:
+	@echo "***********************************"
+	@echo "*                                 *"
+	@echo "* Testing IR Generation           *"
+	@echo "*                                 *"
+	@echo "***********************************"
+	java -jar SEMANT ${INPUT_DIR}/Input.txt ${OUTPUT_DIR}/SemanticStatus.txt
+	@echo "\n"
+	@echo "***********************************"
+	@echo "* IR Output:                      *"
+	@echo "***********************************"
+	@cat ${OUTPUT_DIR}/IR_Output.txt
+	
+test_ir_1:
+	@echo "***********************************"
+	@echo "*                                 *"
+	@echo "* Testing IR Generation (TEST_1)  *"
+	@echo "*                                 *"
+	@echo "***********************************"
+	java -jar SEMANT ${INPUT_DIR}/TEST_1.txt ${OUTPUT_DIR}/SemanticStatus.txt
+	@echo "\n"
+	@echo "***********************************"
+	@echo "* IR Output:                      *"
+	@echo "***********************************"
+	@cat ${OUTPUT_DIR}/IR_Output.txt
+
+test_ir_2:
+	@echo "***********************************"
+	@echo "*                                 *"
+	@echo "* Testing IR Generation (TEST_2)  *"
+	@echo "*                                 *"
+	@echo "***********************************"
+	java -jar SEMANT ${INPUT_DIR}/TEST_2.txt ${OUTPUT_DIR}/SemanticStatus.txt
+	@echo "\n"
+	@echo "***********************************"
+	@echo "* IR Output:                      *"
+	@echo "***********************************"
+	@cat ${OUTPUT_DIR}/IR_Output.txt
+	
 debug: all
 	@echo "\n"
 	@echo "*****************************"

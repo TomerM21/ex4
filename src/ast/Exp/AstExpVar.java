@@ -62,4 +62,10 @@ public class AstExpVar extends AstExp
     public Type SemantMe() {
         return var.SemantMe();
     }
+
+    public temp.Temp irMe()
+    {
+        if (var != null) return var.irMe();
+        return null;
+    }
 }
