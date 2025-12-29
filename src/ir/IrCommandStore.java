@@ -3,6 +3,8 @@
 /***********/
 package ir;
 
+import java.util.*;
+
 /*******************/
 /* GENERAL IMPORTS */
 /*******************/
@@ -27,4 +29,11 @@ public class IrCommandStore extends IrCommand
 	public String toString() {
 		return varName + " := Temp_" + src.getSerialNumber();
 	}
-}
+
+    @Override
+    public Set<String> getWriteVariables() {
+        Set<String> s = new HashSet<>();
+        if (varName != null) s.add(varName);
+        return s;
+    }
+} 

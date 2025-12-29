@@ -3,6 +3,8 @@
 /***********/
 package ir;
 
+import java.util.*;
+
 /*******************/
 /* GENERAL IMPORTS */
 /*******************/
@@ -24,4 +26,11 @@ public class IrCommandAllocate extends IrCommand
 	public String toString() {
 		return "allocate " + varName;
 	}
+
+    @Override
+    public Set<String> getWriteVariables() {
+        Set<String> s = new HashSet<>();
+        if (varName != null) s.add(varName);
+        return s;
+    }
 }

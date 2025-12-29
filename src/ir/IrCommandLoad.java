@@ -3,6 +3,8 @@
 /***********/
 package ir;
 
+import java.util.*;
+
 /*******************/
 /* GENERAL IMPORTS */
 /*******************/
@@ -27,4 +29,11 @@ public class IrCommandLoad extends IrCommand
 	public String toString() {
 		return "Temp_" + dst.getSerialNumber() + " := " + varName;
 	}
-}
+
+    @Override
+    public Set<String> getReadVariables() {
+        Set<String> s = new HashSet<>();
+        if (varName != null) s.add(varName);
+        return s;
+    }
+} 
