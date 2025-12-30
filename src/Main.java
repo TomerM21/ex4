@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.*;
 import java_cup.runtime.Symbol;
 import ast.*;
 import ast.Helpers.HelperFunctions;
@@ -65,13 +66,13 @@ public class Main
 			ast.irMe();//was written before tomerm edit
 			
 			// Get IR commands -tomerm edit from here
-   			java.util.List<ir.IrCommand> irCommands = ir.Ir.getInstance().getCommandList();
+   			List<ir.IrCommand> irCommands = ir.Ir.getInstance().getCommandList();
 
 			// Build CFG
-			cfg.CFG controlFlowGraph = cfg.CFG.buildFromIR(irCommands);
+			cfg.Fullcfggraph controlFlowGraph = cfg.Fullcfggraph.buildFromIR(irCommands);
 
 			// Run dataflow analysis
-			java.util.Set<String> uninitializedVars = controlFlowGraph.runDataflowAnalysis();
+			Set<String> uninitializedVars = controlFlowGraph.runDataflowAnalysis();
 
 			// Output results
 			if (uninitializedVars.isEmpty()) {
@@ -79,8 +80,8 @@ public class Main
     		fileWriter.write("OK");
 			} else {
     		// Sort and output each uninitialized variable on separate line
-    		java.util.List<String> sortedVars = new java.util.ArrayList<>(uninitializedVars);
-    		java.util.Collections.sort(sortedVars);
+    		List<String> sortedVars = new ArrayList<>(uninitializedVars);
+    		Collections.sort(sortedVars);
     		for (String var : sortedVars) {
         	fileWriter.write(var + "\n");/// up to here tomer edit
     }

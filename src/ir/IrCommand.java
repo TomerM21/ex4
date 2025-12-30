@@ -32,6 +32,24 @@ public abstract class IrCommand
 
     public Set<String> getWriteVariables() {
         return new HashSet<>();
+    }
+
+    public boolean isJump() {
+        return false;
+    }
+
+    public boolean isUnconditionalJump() {
+        return false;
+    }
+
+    public boolean isConditionalJump() {
+        return false;
+    }
+
+    public String getJumpLabel() {
+        return null; 
+    }
+
 	/***********************************/
 	/* Abstract method for IR printing */
 	/***********************************/

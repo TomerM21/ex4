@@ -19,6 +19,15 @@ public class IrCommandJumpLabel extends IrCommand
 	{
 		this.labelName = labelName;
 	}
+
+	@Override
+    public boolean isJump() { return true; }
+
+    @Override
+    public boolean isUnconditionalJump() { return true; }
+
+    @Override
+    public String getJumpLabel() { return labelName; }
 	
 	@Override
 	public String toString() {

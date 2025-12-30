@@ -20,11 +20,187 @@ public class Fullcfggraph {
         return fullcfggraph;
     }
 
+
+    // ==========================================================
+    //                 Dataflow Analysis Logic
+    // ==========================================================
+
+    public Set<String> runDataflowAnalysis() {
+        if (blocks.isEmpty()) return Collections.emptySet();
+        // 1. Collect ALL variables (including Temps) to ensure we track everything
+        Set<String> allVars = collectAllVariables();
+
+        // 2. Initialize Worklist with Optimistic Assumption (INITIALIZED)
+        //    This allows loops to converge to the correct "Must-Be-Initialized" set.
+        initializeWorklist(allVars);
+
+        // 3. Initialize Worklist with ONLY the First Block
+        //    We let the changes propagate from the entry point.
+        Queue<Graphblock> worklist = new LinkedList<>();
+        if (this.head != null) {
+            worklist.add(this.head);
+        }
+
+        // 4. Chaotic Iteration
+        while (!worklist.isEmpty()) {
+            Graphblock block = worklist.poll();
+
+            // Merge Predecessors (Intersection Rule)
+            // A variable is INITIALIZED only if it is INITIALIZED in ALL predecessors.
+            if (!block.getPredecessors().isEmpty()) {
+                Map<String, State> newIn = new HashMap<>();
+                
+                for (String var : allVars) {
+                    boolean isUninitOnAnyPath = false;
+                    for (Graphblock pred : block.getPredecessors()) {
+                        // If ANY predecessor has it UNINITIALIZED, it enters as UNINITIALIZED
+                        if (pred.getOut().getOrDefault(var, State.UNINITIALIZED) == State.UNINITIALIZED) {
+                            isUninitOnAnyPath = true;
+                            break;
+                        }
+                    }
+                    newIn.put(var, isUninitOnAnyPath ? State.UNINITIALIZED : State.INITIALIZED);
+                }
+                block.setIn(newIn);
+            }
+
+            // Transfer: Calculate OUT from IN
+            // If OUT changes, add successors to worklist
+            if (block.transfer()) {
+                for (Graphblock succ : block.getSuccessors()) {
+                    if (!worklist.contains(succ)) {
+                        worklist.add(succ);
+                    }
+                }
+            }
+        }
+
+        // 5. Final Scan: Report Errors
+        //    We re-run the transfer logic one last time to capture the specific
+        //    moment a "bad" variable is read.
+        return collectBadVariables();
+    }
+
+    private Set<String> collectBadVariables() {
+        Set<String> badVars = new HashSet<>();
+        
+        for (Graphblock block : blocks) {
+            // Start simulation from the block's computed IN state
+            Map<String, State> current = new HashMap<>(block.getIn());
+            
+            for (IrCommand cmd : block.getCommands()) {
+                // Step A: Reporting (Handle "Bad" and "Good" inputs separately)
+                // We iterate ALL read variables. If 'x' is bad and 'y' is good, 
+                // we catch 'x' without stopping, and we simply ignore 'y'.
+                for (String read : cmd.getReadVariables()) {
+                    if (current.getOrDefault(read, State.UNINITIALIZED) == State.UNINITIALIZED) {
+                        // Only report source variables (filter out compiler Temps and Labels)
+                        if (!read.startsWith("Temp_") && !read.startsWith("Label_")) {
+                            badVars.add(read);
+                        }
+                    }
+                }
+                
+                // Step B: Update State for the next line (Propagation)
+                // If ANY input is bad, the result is bad ("Poison" propagation).
+                boolean usesUninit = false;
+                for (String read : cmd.getReadVariables()) {
+                    if (current.getOrDefault(read, State.UNINITIALIZED) == State.UNINITIALIZED) {
+                        usesUninit = true;
+                        break; 
+                    }
+                }
+
+                // Yuval comment: The above two loops can be merged into one, but for clarity I kept them separate.
+                
+                // Update the state for written variables
+                for (String write : cmd.getWriteVariables()) {
+                    current.put(write, usesUninit ? State.UNINITIALIZED : State.INITIALIZED);
+                }
+            }
+        }
+        return badVars;
+    }
+
+    private void initializeWorklist(Set<String> allVariables) {
+        // Initialize all blocks to Optimistic (INITIALIZED)
+        for (Graphblock block : blocks) {
+            Map<String, State> optimisticMap = new HashMap<>();
+            for (String var : allVariables) {
+                optimisticMap.put(var, State.INITIALIZED);
+            }
+            block.setIn(new HashMap<>(optimisticMap));
+            block.setOut(new HashMap<>(optimisticMap));
+        }
+
+        // Initialize Entry block to Pessimistic (UNINITIALIZED)
+        if (head != null) {
+            for (String var : allVariables) {
+                head.getIn().put(var, State.UNINITIALIZED);
+            }
+        }
+    }
+
+    private Set<String> collectAllVariables() {
+        Set<String> vars = new HashSet<>();
+        for (IrCommand cmd : rawirCommands) {
+            vars.addAll(cmd.getReadVariables());
+            vars.addAll(cmd.getWriteVariables());
+        }
+        return vars;
+    }
   
+    
+   
+    // public Set<String> runDataflowAnalysis(Set<String> allVariables) {
+    //     initializeWorklist(allVariables);
+    //     Queue<Graphblock> worklist = new LinkedList<>(blocks);
+    //     while (!worklist.isEmpty()) {
+    //         Graphblock block = worklist.poll();// takes and removes the element from the queue head
+    //         if (!block.getPredecessors().isEmpty())
+    //         {
+    //             Map<String, State> mergedIn = new HashMap<>(block.getIn());
+    //             for (String var : allVariables) {
+    //                 boolean allInit = true;
+    //                 for (Graphblock pred : block.getPredecessors()) {
+    //                     if (pred.getOut().get(var) == State.UNINITIALIZED) {
+    //                         allInit = false;
+    //                         break;
+    //                     }
+    //                 }
+    //                 if(allInit){ mergedIn.put(var, State.INITIALIZED);}
+    //                 else       { mergedIn.put(var, State.UNINITIALIZED);}
+                   
+    //             }
+    //             block.setIn(mergedIn);
+    //         }
+
+           
+    //         if (block.transfer()) {//transfet=true-->out changed so we need to reprocess
+    //             worklist.addAll(block.getSuccessors());
+    //         }
+    //     }
+    // }
+
+    // private void initializeWorklist(Set<String> allVariables) {
+    //     for (Graphblock block : blocks) {
+    //         Map<String, State> initialMap = new HashMap<>();
+    //         for (String var : allVariables) {
+    //             initialMap.put(var, State.UNINITIALIZED);
+    //         }
+    //         block.setIn(new HashMap<>(initialMap));
+    //         block.getOut().putAll(initialMap);
+    //     }
+    // }
+
+    // ==========================================================
+    //               Graph Construction Helpers
+    // ==========================================================
+
     private void partitionIntoBlocks() { // Identify "Leaders" to split IR into Basic Blocks
         if (rawirCommands.isEmpty()) return;
 
-        Set<Integer> leaders = new TreeSet<>();
+        Set<Integer> leaders = new TreeSet<>(); // Using TreeSet to keep leaders sorted
         leaders.add(0); // Rule 1: First command is a leader
 
         for (int i = 0; i < rawirCommands.size(); i++) {
@@ -44,7 +220,7 @@ public class Fullcfggraph {
             int start = leaderList.get(i);
             int end = (i + 1 < leaderList.size()) ? leaderList.get(i + 1) : rawirCommands.size();
             
-            graphblock block = new Graphblock(i);
+            Graphblock block = new Graphblock(i);
             for (int j = start; j < end; j++) {
                 block.addCommand(rawirCommands.get(j));
             }
@@ -52,70 +228,61 @@ public class Fullcfggraph {
         }
         this.head = blocks.get(0);
     }
-
-     
      
     private void buildControlFlowEdges() {//connecting the blocks 
         for (int i = 0; i < blocks.size(); i++) {
             Graphblock current = blocks.get(i);
             IrCommand lastCmd = current.getCommands().get(current.getCommands().size() - 1);
 
-            if (lastCmd.isUnconditionalJump()) {// Connect only to the target block
-                current.addSuccessor(findBlockByLabel(lastCmd.getJumpLabel()));
-            } else if (lastCmd.isConditionalJump()) {// Connect to target AND next sequential block
-                current.addSuccessor(findBlockByLabel(lastCmd.getJumpLabel()));
+            if (lastCmd.isUnconditionalJump()) { // Connect only to the target block
+                Graphblock targetBlock = findBlockByLabel(lastCmd.getJumpLabel());
+                if (targetBlock != null) current.addSuccessor(targetBlock);
+                // else: print error - label doesnt exist
+
+            } else if (lastCmd.isConditionalJump()) { // Connect to target AND next sequential block
+                Graphblock targetBlock = findBlockByLabel(lastCmd.getJumpLabel());
+                if (targetBlock != null) current.addSuccessor(targetBlock);
+                // else: print error - label doesnt exist
                 if (i + 1 < blocks.size()) current.addSuccessor(blocks.get(i + 1));
-            } else {// Normal command: just connect to next sequential block
+
+            } else { // Normal command: just connect to next sequential block
                 if (i + 1 < blocks.size()) current.addSuccessor(blocks.get(i + 1));
             }
-        }
-    }
-
-   
-    public void runDataflowAnalysis(Set<String> allVariables) {
-        initializeWorklist(allVariables);
-        Queue<Graphblock> worklist = new LinkedList<>(blocks);
-        while (!worklist.isEmpty()) {
-            Graphblock block = worklist.poll();// takes and removes the element from the queue head
-            if (!block.getPredecessors().isEmpty())
-            {
-                Map<String, State> mergedIn = new HashMap<>(block.getIn());
-                for (String var : allVariables) {
-                    boolean allInit = true;
-                    for (Graphblock pred : block.getPredecessors()) {
-                        if (pred.getOut().get(var) == State.UNINITIALIZED) {
-                            allInit = false;
-                            break;
-                        }
-                    }
-                    if(allInit){ mergedIn.put(var, State.INITIALIZED);}
-                    else       { mergedIn.put(var, State.UNINITIALIZED);}
-                   
-                }
-                block.setIn(mergedIn);
-            }
-
-           
-            if (block.transfer()) {//transfet=true-->out changed so we need to reprocess
-                worklist.addAll(block.getSuccessors());
-            }
-        }
-    }
-
-    private void initializeWorklist(Set<String> allVariables) {
-        for (Graphblock block : blocks) {
-            Map<String, State> initialMap = new HashMap<>();
-            for (String var : allVariables) {
-                initialMap.put(var, State.UNINITIALIZED);
-            }
-            block.setIn(new HashMap<>(initialMap));
-            block.getOut().putAll(initialMap);
         }
     }
 
     // Helper: Find index of a label in raw commands
-    private int findTargetIndex(String label) { /* Implementation depends on your IR */ return 0; }
+    private int findTargetIndex(String label) {
+        if (label == null) return -1;
+
+        for (int i = 0; i < rawirCommands.size(); i++) {
+            IrCommand cmd = rawirCommands.get(i);
+            if (cmd instanceof IrCommandLabel) {
+                if (((IrCommandLabel) cmd).getLabelName().equals(label)) {
+                    return i;
+                }
+            }
+        }
+        // Should not happen in a correct program
+        return -1;
+    }
     
     // Helper: Find which block starts with a specific label
-    private Graphblock findBlockByLabel(String label) { /* Implementation logic */ return null; }
+    private Graphblock findBlockByLabel(String label) {
+        if (label == null) return null;
+        if (blocks == null) return null;
+
+        for (Graphblock block : blocks) {
+            // Check the first command of the block
+            if (!block.getCommands().isEmpty()) {
+                IrCommand firstCmd = block.getCommands().get(0);
+                if (firstCmd instanceof IrCommandLabel) {
+                    if (((IrCommandLabel) firstCmd).getLabelName().equals(label)) {
+                        return block;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 }
