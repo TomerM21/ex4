@@ -21,7 +21,7 @@ public class Fullcfggraph {
     }
 
   
-    private void partitionIntoBlocks() {//Pass 1: Identify "Leaders" to split IR into Basic Blocks
+    private void partitionIntoBlocks() { // Identify "Leaders" to split IR into Basic Blocks
         if (rawirCommands.isEmpty()) return;
 
         Set<Integer> leaders = new TreeSet<>();
@@ -29,7 +29,7 @@ public class Fullcfggraph {
 
         for (int i = 0; i < rawirCommands.size(); i++) {
             IrCommand cmd = rawirCommands.get(i);
-            if (cmd.isJump()) { // goto or if-goto
+            if (cmd.isJump()) { // tomerm added to our ircommand this method
                 // Rule 2: Target of a jump is a leader
                 int targetIndex = findTargetIndex(cmd.getJumpLabel());
                 if (targetIndex != -1) leaders.add(targetIndex);
@@ -60,34 +60,25 @@ public class Fullcfggraph {
             Graphblock current = blocks.get(i);
             IrCommand lastCmd = current.getCommands().get(current.getCommands().size() - 1);
 
-            if (lastCmd.isUnconditionalJump()) {
-                // Connect only to the target block
+            if (lastCmd.isUnconditionalJump()) {// Connect only to the target block
                 current.addSuccessor(findBlockByLabel(lastCmd.getJumpLabel()));
-            } else if (lastCmd.isConditionalJump()) {
-                // Connect to target AND next sequential block
+            } else if (lastCmd.isConditionalJump()) {// Connect to target AND next sequential block
                 current.addSuccessor(findBlockByLabel(lastCmd.getJumpLabel()));
                 if (i + 1 < blocks.size()) current.addSuccessor(blocks.get(i + 1));
-            } else {
-                // Normal command: just connect to next sequential block
+            } else {// Normal command: just connect to next sequential block
                 if (i + 1 < blocks.size()) current.addSuccessor(blocks.get(i + 1));
             }
         }
     }
 
-    /**
-     * Dataflow Analysis: The Chaotic Iterations (Worklist) Algorithm.
-     */
+   
     public void runDataflowAnalysis(Set<String> allVariables) {
         initializeWorklist(allVariables);
         Queue<Graphblock> worklist = new LinkedList<>(blocks);
-
         while (!worklist.isEmpty()) {
-            Graphblock block = worklist.poll();
-
-            // Meet Operator: IN[B] = Intersection of OUT[Predecessors]
-            // For variable initialization, a variable is INITIALIZED only if 
-            // it is INITIALIZED on ALL paths.
-            if (!block.getPredecessors().isEmpty()) {
+            Graphblock block = worklist.poll();// takes and removes the element from the queue head
+            if (!block.getPredecessors().isEmpty())
+            {
                 Map<String, State> mergedIn = new HashMap<>(block.getIn());
                 for (String var : allVariables) {
                     boolean allInit = true;
@@ -97,14 +88,15 @@ public class Fullcfggraph {
                             break;
                         }
                     }
-                    mergedIn.put(var, allInit ? State.INITIALIZED : State.UNINITIALIZED);
+                    if(allInit){ mergedIn.put(var, State.INITIALIZED);}
+                    else       { mergedIn.put(var, State.UNINITIALIZED);}
+                   
                 }
                 block.setIn(mergedIn);
             }
 
-            // Transfer: Compute OUT from IN
-            if (block.transfer()) {
-                // If OUT changed, re-add all successors to worklist
+           
+            if (block.transfer()) {//transfet=true-->out changed so we need to reprocess
                 worklist.addAll(block.getSuccessors());
             }
         }
