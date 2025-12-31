@@ -6,6 +6,7 @@ package ir;
 /*******************/
 /* GENERAL IMPORTS */
 /*******************/
+import java.util.*;
 
 /*******************/
 /* PROJECT IMPORTS */
@@ -27,7 +28,7 @@ public class IrCommandJumpIfEqToZero extends IrCommand
     public boolean isJump() { return true; }
 
     @Override
-    public boolean isUnconditionalJump() { return true; }
+    public boolean isConditionalJump() { return true; }
 
     @Override
     public String getJumpLabel() { return labelName; }
@@ -35,5 +36,15 @@ public class IrCommandJumpIfEqToZero extends IrCommand
 	@Override
 	public String toString() {
 		return "if Temp_" + t.getSerialNumber() + " == 0 goto " + labelName;
+	}
+
+	public Set<String> getReadTemps() {
+		Set<String> result = new HashSet<>();
+		result.add("Temp_" + t.getSerialNumber());
+		return result;
+	}
+
+	public Set<String> getWriteTemps() {
+		return new HashSet<>();
 	}
 }

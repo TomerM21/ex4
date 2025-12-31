@@ -6,6 +6,7 @@ package ir;
 /*******************/
 /* GENERAL IMPORTS */
 /*******************/
+import java.util.*;
 
 /*******************/
 /* PROJECT IMPORTS */
@@ -28,5 +29,18 @@ public class IrCommandBinopDivIntegers extends IrCommand
 	@Override
 	public String toString() {
 		return "Temp_" + dst.getSerialNumber() + " := Temp_" + t1.getSerialNumber() + " / Temp_" + t2.getSerialNumber();
+	}
+
+	public Set<String> getReadTemps() {
+		Set<String> result = new HashSet<>();
+		result.add("Temp_" + t1.getSerialNumber());
+		result.add("Temp_" + t2.getSerialNumber());
+		return result;
+	}
+
+	public Set<String> getWriteTemps() {
+		Set<String> result = new HashSet<>();
+		result.add("Temp_" + dst.getSerialNumber());
+		return result;
 	}
 }

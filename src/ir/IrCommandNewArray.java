@@ -6,6 +6,7 @@ package ir;
 /*******************/
 /* GENERAL IMPORTS */
 /*******************/
+import java.util.*;
 
 /*******************/
 /* PROJECT IMPORTS */
@@ -28,5 +29,17 @@ public class IrCommandNewArray extends IrCommand
 	@Override
 	public String toString() {
 		return "Temp_" + dst.getSerialNumber() + " := new " + typeName + "[Temp_" + size.getSerialNumber() + "]";
+	}
+
+	public Set<String> getReadTemps() {
+		Set<String> result = new HashSet<>();
+		result.add("Temp_" + size.getSerialNumber());
+		return result;
+	}
+
+	public Set<String> getWriteTemps() {
+		Set<String> result = new HashSet<>();
+		result.add("Temp_" + dst.getSerialNumber());
+		return result;
 	}
 }

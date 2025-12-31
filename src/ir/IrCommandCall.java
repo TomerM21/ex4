@@ -6,6 +6,7 @@ package ir;
 /*******************/
 /* GENERAL IMPORTS */
 /*******************/
+import java.util.*;
 
 /*******************/
 /* PROJECT IMPORTS */
@@ -35,5 +36,23 @@ public class IrCommandCall extends IrCommand
 			return "call " + funcName + "(" + argsStr + ")";
 		}
 		return "Temp_" + dst.getSerialNumber() + " := call " + funcName + "(" + argsStr + ")";
+	}
+
+	public Set<String> getReadTemps() {
+		Set<String> result = new HashSet<>();
+		TempList current = args;
+		while (current != null) {
+			result.add("Temp_" + current.head.getSerialNumber());
+			current = current.tail;
+		}
+		return result;
+	}
+
+	public Set<String> getWriteTemps() {
+		Set<String> result = new HashSet<>();
+		if (dst != null) {
+			result.add("Temp_" + dst.getSerialNumber());
+		}
+		return result;
 	}
 }

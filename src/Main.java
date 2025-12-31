@@ -74,37 +74,26 @@ public class Main
 			// Run dataflow analysis
 			Set<String> uninitializedVars = controlFlowGraph.runDataflowAnalysis();
 
-			// Output results
+			/****************************************/
+			/* [9] Output dataflow analysis results */
+			/****************************************/
 			if (uninitializedVars.isEmpty()) {
-    		// No uninitialized variables detected
-    		fileWriter.write("OK");
+				// No uninitialized variables detected
+				fileWriter.write("!OK");
 			} else {
-    		// Sort and output each uninitialized variable on separate line
-    		List<String> sortedVars = new ArrayList<>(uninitializedVars);
-    		Collections.sort(sortedVars);
-    		for (String var : sortedVars) {
-        	fileWriter.write(var + "\n");/// up to here tomer edit
-    }
-}
-
-			/****************************************/
-			/* [9] Write IR to file for debugging   */
-			/****************************************/
-			String irOutputFile = outputFileName.replace("SemanticStatus.txt", "IR_Output.txt");
-			try {
-				ir.Ir.getInstance().printIrToFile(irOutputFile);
-				System.out.println("IR output written to: " + irOutputFile);
-			} catch (Exception irEx) {
-				System.err.println("Failed to write IR output: " + irEx.getMessage());
+				// Sort and output each uninitialized variable on separate line
+				List<String> sortedVars = new ArrayList<>(uninitializedVars);
+				Collections.sort(sortedVars);
+				for (int i = 0; i < sortedVars.size(); i++) {
+					fileWriter.write(sortedVars.get(i));
+					if (i < sortedVars.size() - 1) {
+						fileWriter.write("\n");
+					}
+				}
 			}
 			
-			/****************************************/
-			/* [10] Write OK if no errors occurred  */
-			/****************************************/
-			fileWriter.write("OK");
-			
 			/*************************************/
-			/* [11] Finalize AST GRAPHIZ DOT file */
+			/* [10] Finalize AST GRAPHIZ DOT file */
 			/*************************************/
 			// AstGraphviz.getInstance().finalizeFile();
     	}

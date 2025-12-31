@@ -89,33 +89,53 @@ public class Fullcfggraph {
             Map<String, State> current = new HashMap<>(block.getIn());
             
             for (IrCommand cmd : block.getCommands()) {
-                // Step A: Reporting (Handle "Bad" and "Good" inputs separately)
-                // We iterate ALL read variables. If 'x' is bad and 'y' is good, 
-                // we catch 'x' without stopping, and we simply ignore 'y'.
+                // Special case: Allocate always creates UNINITIALIZED variable (handles shadowing)
+                if (cmd instanceof IrCommandAllocate) {
+                    for (String writeVar : cmd.getWriteVariables()) {
+                        current.put(writeVar, State.UNINITIALIZED);
+                    }
+                    continue; // Skip normal processing
+                }
+                
+                // Step A: Reporting - Check named variable reads (not temps)
                 for (String read : cmd.getReadVariables()) {
                     if (current.getOrDefault(read, State.UNINITIALIZED) == State.UNINITIALIZED) {
-                        // Only report source variables (filter out compiler Temps and Labels)
+                        // Only report source variables (filter out Temps and Labels)
                         if (!read.startsWith("Temp_") && !read.startsWith("Label_")) {
                             badVars.add(read);
                         }
                     }
                 }
                 
-                // Step B: Update State for the next line (Propagation)
-                // If ANY input is bad, the result is bad ("Poison" propagation).
+                // Step B: Update State - Check ALL reads (variables AND temps)
                 boolean usesUninit = false;
+                
+                // Check named variable reads
                 for (String read : cmd.getReadVariables()) {
                     if (current.getOrDefault(read, State.UNINITIALIZED) == State.UNINITIALIZED) {
                         usesUninit = true;
                         break; 
                     }
                 }
-
-                // Yuval comment: The above two loops can be merged into one, but for clarity I kept them separate.
                 
-                // Update the state for written variables
+                // Check temp reads
+                if (!usesUninit) {
+                    for (String readTemp : cmd.getReadTemps()) {
+                        if (current.getOrDefault(readTemp, State.UNINITIALIZED) == State.UNINITIALIZED) {
+                            usesUninit = true;
+                            break;
+                        }
+                    }
+                }
+                
+                // Update written variables
                 for (String write : cmd.getWriteVariables()) {
                     current.put(write, usesUninit ? State.UNINITIALIZED : State.INITIALIZED);
+                }
+                
+                // Update written temps
+                for (String writeTemp : cmd.getWriteTemps()) {
+                    current.put(writeTemp, usesUninit ? State.UNINITIALIZED : State.INITIALIZED);
                 }
             }
         }
@@ -146,6 +166,8 @@ public class Fullcfggraph {
         for (IrCommand cmd : rawirCommands) {
             vars.addAll(cmd.getReadVariables());
             vars.addAll(cmd.getWriteVariables());
+            vars.addAll(cmd.getReadTemps());
+            vars.addAll(cmd.getWriteTemps());
         }
         return vars;
     }

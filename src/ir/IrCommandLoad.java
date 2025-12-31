@@ -36,4 +36,14 @@ public class IrCommandLoad extends IrCommand
         if (varName != null) s.add(varName);
         return s;
     }
+
+	public Set<String> getReadTemps() {
+		return new HashSet<>();
+	}
+
+	public Set<String> getWriteTemps() {
+		Set<String> result = new HashSet<>();
+		result.add("Temp_" + dst.getSerialNumber());
+		return result;
+	}
 } 

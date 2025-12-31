@@ -73,6 +73,7 @@ public class Graphblock
     /**
      * Updates the OUT set based on the IN set and the commands in the block.
      * It simulates execution line-by-line to handle dependencies correctly.
+     * Tracks both named variables AND temporaries.
      */
     public boolean transfer() {
         // 1. Start simulation with the state at the block entry (IN set)
@@ -81,31 +82,54 @@ public class Graphblock
         // 2. Iterate commands sequentially
         for (IrCommand cmd : commands) {
             
-            // Step A: Check inputs (READS)
-            // If ANY input variable is UNINITIALIZED, the operation is "poisoned" and the new value is UNINITIALIZED
+            // Special case: Allocate always creates UNINITIALIZED variable (handles shadowing)
+            if (cmd instanceof IrCommandAllocate) {
+                for (String writeVar : cmd.getWriteVariables()) {
+                    currentState.put(writeVar, State.UNINITIALIZED);
+                }
+                continue; // Skip normal processing
+            }
+            
+            // Step A: Check inputs (READS) - both named variables AND temps
             boolean usesUninit = false;
+            
+            // Check named variable reads
             for (String readVar : cmd.getReadVariables()) {
-                // Default to UNINITIALIZED if not found (safety)
                 if (currentState.getOrDefault(readVar, State.UNINITIALIZED) == State.UNINITIALIZED) {
                     usesUninit = true;
                     break;
                 }
             }
+            
+            // Check temp reads
+            if (!usesUninit) {
+                for (String readTemp : cmd.getReadTemps()) {
+                    if (currentState.getOrDefault(readTemp, State.UNINITIALIZED) == State.UNINITIALIZED) {
+                        usesUninit = true;
+                        break;
+                    }
+                }
+            }
 
-            // Step B: Update outputs (WRITES)
+            // Step B: Update outputs (WRITES) - both named variables AND temps
             for (String writeVar : cmd.getWriteVariables()) {
                 if (usesUninit) {
-                    // Propagate "Bad" state: Result depends on uninitialized data
                     currentState.put(writeVar, State.UNINITIALIZED);
                 } else {
-                    // Generate "Good" state: Assigned a constant or fully initialized value
                     currentState.put(writeVar, State.INITIALIZED);
+                }
+            }
+            
+            for (String writeTemp : cmd.getWriteTemps()) {
+                if (usesUninit) {
+                    currentState.put(writeTemp, State.UNINITIALIZED);
+                } else {
+                    currentState.put(writeTemp, State.INITIALIZED);
                 }
             }
         }
 
         // 3. Update OUT set and report if it changed
-        // This triggers the chaotic iteration to continue if we found new info
         if (!currentState.equals(this.out)) {
             this.out = currentState;
             return true; 

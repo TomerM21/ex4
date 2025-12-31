@@ -36,4 +36,14 @@ public class IrCommandStore extends IrCommand
         if (varName != null) s.add(varName);
         return s;
     }
+
+	public Set<String> getReadTemps() {
+		Set<String> result = new HashSet<>();
+		result.add("Temp_" + src.getSerialNumber());
+		return result;
+	}
+
+	public Set<String> getWriteTemps() {
+		return new HashSet<>();
+	}
 } 

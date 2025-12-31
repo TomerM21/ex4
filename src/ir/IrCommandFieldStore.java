@@ -6,6 +6,7 @@ package ir;
 /*******************/
 /* GENERAL IMPORTS */
 /*******************/
+import java.util.*;
 
 /*******************/
 /* PROJECT IMPORTS */
@@ -28,5 +29,16 @@ public class IrCommandFieldStore extends IrCommand
 	@Override
 	public String toString() {
 		return "Temp_" + object.getSerialNumber() + "." + fieldName + " := Temp_" + value.getSerialNumber();
+	}
+
+	public Set<String> getReadTemps() {
+		Set<String> result = new HashSet<>();
+		result.add("Temp_" + object.getSerialNumber());
+		result.add("Temp_" + value.getSerialNumber());
+		return result;
+	}
+
+	public Set<String> getWriteTemps() {
+		return new HashSet<>();
 	}
 }

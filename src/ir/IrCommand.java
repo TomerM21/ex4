@@ -34,6 +34,15 @@ public abstract class IrCommand
         return new HashSet<>();
     }
 
+    // Track temp variable dependencies
+    public Set<String> getReadTemps() {
+        return new HashSet<>();
+    }
+
+    public Set<String> getWriteTemps() {
+        return new HashSet<>();
+    }
+
     public boolean isJump() {
         return false;
     }

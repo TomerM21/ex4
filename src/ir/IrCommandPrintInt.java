@@ -6,6 +6,7 @@ package ir;
 /*******************/
 /* GENERAL IMPORTS */
 /*******************/
+import java.util.*;
 
 /*******************/
 /* PROJECT IMPORTS */
@@ -24,5 +25,15 @@ public class IrCommandPrintInt extends IrCommand
 	@Override
 	public String toString() {
 		return "PrintInt(Temp_" + t.getSerialNumber() + ")";
+	}
+
+	public Set<String> getReadTemps() {
+		Set<String> result = new HashSet<>();
+		result.add("Temp_" + t.getSerialNumber());
+		return result;
+	}
+
+	public Set<String> getWriteTemps() {
+		return new HashSet<>();
 	}
 }
