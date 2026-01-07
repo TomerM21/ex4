@@ -42,9 +42,10 @@ public class HelperFunctions {
             TypeArray targetArray = (TypeArray) target;
             TypeArray sourceArray = (TypeArray) source;
             
-            // If source is anonymous (no name, from "new int[]"), allow if element types match
+            // If source is anonymous (no name, from "new int[]"), element types must match EXACTLY
+            // Arrays are NOT covariant - new B[] cannot be assigned to A[] even if B extends A
             if (sourceArray.name == null || sourceArray.name.isEmpty()) {
-                return canAssign(targetArray.elementType, sourceArray.elementType);
+                return targetArray.elementType == sourceArray.elementType;
             }
             
             // If both have names (named array types), they must be exactly the same type

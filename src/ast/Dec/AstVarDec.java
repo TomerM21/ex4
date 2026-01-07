@@ -116,6 +116,15 @@ public class AstVarDec extends AstDec {
         // This allows AstClassDec to know the name of this variable later.
         TypeClassVarDec varDecType = new TypeClassVarDec(varType, name);
         varDecType.lineNumber = this.lineNumber;  // Store the line number for error reporting
+
+                
+        // 7.5. If we're inside a class, also add to class's fields HashMap immediately
+        // This allows method bodies to access fields before all members are processed
+        SymbolTable tbl = SymbolTable.getInstance();
+        if (tbl.currentClass != null) {
+            tbl.currentClass.fields.put(name, varType);
+        }
+        
         return varDecType; 
     }
 

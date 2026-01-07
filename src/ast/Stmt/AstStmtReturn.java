@@ -79,6 +79,13 @@ public class AstStmtReturn extends AstStmt
         Type actual = TypeVoid.getInstance(); // Default for empty return
         if (exp != null) {
             actual = exp.SemantMe();
+
+            // Cannot return a void expression, even in a void function
+            if (actual instanceof TypeVoid) {
+                System.out.println(">> ERROR: Cannot return void expression");
+                this.lineNumber = exp.lineNumber;
+                error();
+            }
         }
 
         if (!HelperFunctions.canAssign(expected, actual)) {

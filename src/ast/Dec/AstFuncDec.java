@@ -100,6 +100,12 @@ public class AstFuncDec extends AstDec {
         // 5. Enter Function into Symbol Table (Before body, allowing recursion)
         tbl.enter(name, funcType);
 
+        // 5.5. If we're inside a class, also add to class's methods HashMap immediately
+        // This allows methods to call other methods (including themselves) before all methods are processed
+        if (tbl.currentClass != null) {
+            tbl.currentClass.methods.put(name, funcType);
+        }
+        
         // 6. Begin Scope for Function Body
         tbl.beginScope();
 
